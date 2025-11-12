@@ -2,6 +2,17 @@
 README.md
 .assets # used to save symlink destinations files
 key.txt.age
+.cspell.json
+.editorconfig
+.gitignore
+.prettierrc.json
+.trunk
+.vscode
+**/*.src.ini
+node_modules
+package*.json
+Packages.md
+README.md
 
 # Manage files that have different locations on different machines
 # https://www.chezmoi.io/user-guide/manage-machine-to-machine-differences/#ignore-files-or-a-directory-on-different-machines
@@ -13,6 +24,28 @@ Library
 {{ end }}
 
 {{ if ne .chezmoi.os "linux" }}
+.chezmoiscripts/linux/**
+dot_bashrc
+dot_config
+dot_local
+{{ end }}
 
+{{ if ne .chezmoi.os "windows" }}
+.chezmoiscripts/windows/**
+readonly_Documents/PowerShell/**
+readonly_Documents/WindowsPowerShell/**
+readonly_Documents/PowerShell/Microsoft.PowerShell_profile.ps1
+readonly_Documents/WindowsPowerShell/Microsoft.PowerShell_profile.ps1
+{{ end }}
+
+{{ if ne .osid "linux-arch" }}
+dot_config/paru/**
+.chezmoiscripts/linux/arch/**
+.chezmoidata/packages/linux/arch.yaml
+{{ end }}
+
+{{ if and (ne .osid "linux-debian") (ne .osid "linux-ubuntu") (ne .osid "linux-debian ubuntu") (ne .osid "linux-ubuntu debian") }}
+.chezmoiscripts/linux/debian/**
+.chezmoidata/packages/linux/debian.yaml
 {{ end }}
 

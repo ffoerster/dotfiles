@@ -1,4 +1,14 @@
 encryption = "age"
+
+# Determine OS ID for conditional includes
+{{- $osid := .chezmoi.os -}}
+{{- if hasKey .chezmoi.osRelease "id" -}}
+{{-   $osid = printf "%s-%s" .chezmoi.os .chezmoi.osRelease.id -}}
+{{- end -}}
+{{- if hasKey .chezmoi.osRelease "idLike" -}}
+{{-   $osid = printf "%s-%s" .chezmoi.os .chezmoi.osRelease.idLike -}}
+{{- end -}}
+
 [age]
   identity = "~/.config/chezmoi/key.txt"
   recipient = "age1cl8mg4krjvyuk3syzk8jsqk095gnx7tnuxlrup3nsm9nhwtehezssu0nv0"
@@ -10,6 +20,16 @@ encryption = "age"
     command = "code"
     args = ["--wait"]
 
+[data]
+osid = {{ $osid | quote }}
+
 # Run a script to install password manager CLI before reading source state
 [hooks.read-source-state.pre]
-    command = ".local/share/chezmoi/home/.install-password-manager.sh"
+{{- if eq .chezmoi.os "windows" }}
+command = "powershell"
+args = ["{{ .chezmoi.sourceDir }}/.chezmoiscripts/windows/.install-password-manager.ps1"]
+{{- else if eq .chezmoi.os "darwin" }}
+command = "{{ .chezmoi.sourceDir }}/.chezmoiscripts/macos/.install-password-manager.sh"
+{{ else }}
+command = "{{ .chezmoi.sourceDir }}/.chezmoiscripts/linux/.install-password-manager.sh"
+{{ end -}}
