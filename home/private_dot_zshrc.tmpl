@@ -155,6 +155,12 @@ alias mkdir='mkdir -p'            # Create parent directories as needed
 alias psa='ps aux'                # Show all processes
 alias psg='ps aux | grep'         # Search processes
 
+# Docker shortcuts
+alias dps='docker ps'             # List running containers
+alias dcp='docker compose pull'  # Pull compose services
+alias dcu='docker compose up -d --remove-orphans'  # Start compose services in background
+alias dcd='docker compose down'   # Stop compose services
+
 # Use eza for long listings if available
 if [[ -f /usr/bin/eza ]]; then
   alias ll="eza -l --icons=always --color=always"
