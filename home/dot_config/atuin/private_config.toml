@@ -165,30 +165,44 @@ enter_accept = true
 
 [stats]
 ## Set commands where we should consider the subcommand for statistics. Eg, kubectl get vs just kubectl
-# common_subcommands = [
-#   "apt",
-#   "cargo",
-#   "composer",
-#   "dnf",
-#   "docker",
-#   "git",
-#   "go",
-#   "ip",
-#   "kubectl",
-#   "nix",
-#   "nmcli",
-#   "npm",
-#   "pecl",
-#   "pnpm",
-#   "podman",
-#   "port",
-#   "systemctl",
-#   "tmux",
-#   "yarn",
-# ]
+common_subcommands = [
+	"apt",
+	"cargo",
+	"cm",
+	"composer",
+	"dnf",
+	"docker",
+	"git",
+	"go",
+	"ip",
+	"kubectl",
+	"nix",
+	"nmcli",
+	"npm",
+	"pecl",
+	"pnpm",
+	"dotnet",
+	"podman",
+	"port",
+	"systemctl",
+	"tmux",
+	"yarn",
+	"zellij",
+	"chezmoi",
+	"mt",
+	"just",
+	"make",
+	"uv",
+	"bun",
+	"jrnl",
+]
 
 ## Set commands that should be totally stripped and ignored from stats
 # common_prefix = ["sudo"]
+common_prefix = [
+	"sudo",
+	"host"
+]
 
 ## Set commands that will be completely ignored from stats
 # ignored_commands = [

@@ -20,6 +20,20 @@ truncation_length = 4
 # Catppuccin 'lavender'
 style = "bold lavender"
 
+[package]
+format = '[$symbol$version]($style) '
+symbol = ""
+style = "bold dimmed"
+
+[python]
+format = '[${symbol}${pyenv_prefix}(${version} )(\($virtualenv\) )]($style)'
+
+[nodejs]
+format = '[$symbol($version )]($style)'
+
+[bun]
+format = '[$symbol($version )]($style)'
+
 [palettes.catppuccin_mocha]
 rosewater = "#f5e0dc"
 flamingo = "#f2cdcd"
