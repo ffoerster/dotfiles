@@ -1,0 +1,44 @@
+# hide top bar 
+# macos-titlebar-style = hidden
+
+#theme
+theme = Kanagawa Wave
+
+# custom fonts
+font-family = "Monaspace Neon"
+# ss01: != and ===
+font-feature = "ss01"
+# ss02: <= and >=
+font-feature = "ss02"
+# ss03: -> and ~>
+font-feature = "ss03"
+# ss04: <> and </>
+font-feature = "ss04"
+# liga: //, ..., ||
+font-feature = "liga"
+
+#font-family = Iosevka
+#font-family-bold = Iosevka Bold
+#font-family-italic = Iosevka Italic
+#font-family-bold-italic = Iosevka Bold Italic
+
+# these are used by fzf in vim
+keybind = ctrl+shift+v=ignore
+keybind = ctrl+shift+s=ignore
+keybind = ctrl+shift+t=ignore
+
+
+keybind = alt+shift+p=ignore
+
+#fix nvim c-o
+# keybind = ctrl+o=text:\x0f
+
+# turn full screen off
+keybind = cmd+enter=ignore
+
+font-size =14.0
+
+background-opacity = 0.98
+copy-on-select = clipboard
+
+confirm-close-surface=false

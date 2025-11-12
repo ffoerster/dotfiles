@@ -113,8 +113,9 @@ setopt COMPLETE_IN_WORD      # Complete from both ends of word
 # ALIASES
 # =============================================================================
 
-# Directory navigation
+# Tools
 alias x="exit"
+alias tmux_work='tmuxp load ~/.config/tmux/tmuxp-work.yml'
 
 # Force color terminal for SSH connections
 alias ssh="TERM=xterm-256color ssh"

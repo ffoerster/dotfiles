@@ -1,0 +1,9 @@
+---
+session_name: work
+windows:
+  - window_name: ssh
+    panes:
+      - ls
+  - window_name: editor
+    panes:
+      - cd ~/code && nvim
