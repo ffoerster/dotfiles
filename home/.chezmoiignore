@@ -1,21 +1,44 @@
+# ─────────────────────────────
+# Generic OS / tooling cruft
+# ─────────────────────────────
 .DS_Store
+node_modules
+.trunk
+.vscode
+**/*.src.ini
+
+# Project / repo files not needed in chezmoi
 README.md
-.assets # used to save symlink destinations files
+Packages.md
+.assets       # used to save symlink destination files
 key.txt.age
 .cspell.json
 .editorconfig
 .gitignore
 .prettierrc.json
-.trunk
-.vscode
-**/*.src.ini
-node_modules
 package*.json
-Packages.md
-README.md
 
+# ─────────────────────────────
+# Zsh & shell: history, caches, dumps
+# ─────────────────────────────
+# Zsh completion dump (constantly rewritten by compinit)
+.zcompdump*
+# Zsh history variants
+.zsh_history*
+.zhistory*
+# Zsh per-session history (if enabled)
+.zsh_sessions/**
+# Other typical shell / REPL histories
+.bash_history
+.lesshst
+.python_history
+.sqlite_history
+
+# ─────────────────────────────
+# OS-specific ignores
 # Manage files that have different locations on different machines
 # https://www.chezmoi.io/user-guide/manage-machine-to-machine-differences/#ignore-files-or-a-directory-on-different-machines
+# ─────────────────────────────
 
 {{ if ne .chezmoi.os "darwin" }}
 Library/Application Support
@@ -48,4 +71,3 @@ dot_config/paru/**
 .chezmoiscripts/linux/debian/**
 .chezmoidata/packages/linux/debian.yaml
 {{ end }}
-
