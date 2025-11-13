@@ -29,7 +29,7 @@ osid = {{ $osid | quote }}
 command = "powershell"
 args = ["{{ .chezmoi.sourceDir }}/.chezmoiscripts/windows/.install-password-manager.ps1"]
 {{- else if eq .chezmoi.os "darwin" }}
-command = "{{ .chezmoi.sourceDir }}/.chezmoiscripts/macos/.install-password-manager.sh"
+command = "{{ .chezmoi.sourceDir }}/.chezmoiscripts/darwin/.install-password-manager.sh"
 {{ else }}
 command = "{{ .chezmoi.sourceDir }}/.chezmoiscripts/linux/.install-password-manager.sh"
 {{ end -}}
