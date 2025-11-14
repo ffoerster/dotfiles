@@ -1,0 +1,57 @@
+# Arch Linux specific packages
+
+# Official repositories (pacman)
+pacman:
+  # Base development
+  - base-devel
+  - git
+  - curl
+  - wget
+  - unzip
+  - tar
+  - zsh
+  - tmux
+  - neovim
+  - htop
+  - tree
+
+  # Modern CLI tools
+  - ripgrep
+  - fd
+  - bat
+  - eza
+  - zoxide
+  - fzf
+  - jq
+
+  # Development
+  - docker
+  - docker-compose
+  - ansible
+  - python
+  - python-pip
+  - nodejs
+  - npm
+
+  # System utilities
+  - openssh
+  - man-db
+  - man-pages
+  - fastfetch
+
+# AUR packages (requires paru or yay)
+aur:
+  - 1password
+  - 1password-cli
+  # Add AUR-only packages here
+  # - spotify
+  # - visual-studio-code-bin
+  # - slack-desktop
+
+# Optional: packages for desktop/GUI systems only
+# (use conditional in install script)
+gui_packages:
+  - firefox
+  - alacritty
+  # - kitty
+  # - wezterm

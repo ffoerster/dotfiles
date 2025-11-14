@@ -1,0 +1,36 @@
+# Common packages across all systems
+# These are CLI tools typically available on all platforms
+
+cli_tools:
+  - name: git
+    description: "Version control system"
+  - name: curl
+    description: "Command line tool for transferring data"
+  - name: wget
+    description: "Network downloader"
+  - name: jq
+    description: "JSON processor"
+  - name: ripgrep
+    description: "Fast grep alternative"
+  - name: fd
+    description: "Fast find alternative"
+  - name: bat
+    description: "Cat with syntax highlighting"
+  - name: eza
+    description: "Modern ls replacement"
+  - name: zoxide
+    description: "Smarter cd command"
+  - name: fzf
+    description: "Fuzzy finder"
+  - name: tmux
+    description: "Terminal multiplexer"
+  - name: neovim
+    description: "Modern vim"
+  - name: htop
+    description: "Interactive process viewer"
+
+development:
+  - name: docker
+    description: "Container platform"
+  - name: docker-compose
+    description: "Multi-container orchestration"

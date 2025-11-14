@@ -1,5 +1,8 @@
 encryption = "age"
 
+# ─────────────────────────────────────────────────────
+# OS Detection
+# ─────────────────────────────────────────────────────
 # Determine OS ID for conditional includes
 {{- $osid := .chezmoi.os -}}
 {{- if hasKey .chezmoi.osRelease "id" -}}
@@ -9,10 +12,34 @@ encryption = "age"
 {{-   $osid = printf "%s-%s" .chezmoi.os .chezmoi.osRelease.idLike -}}
 {{- end -}}
 
+# ─────────────────────────────────────────────────────
+# Machine Type Detection
+# ─────────────────────────────────────────────────────
+# Prompt for machine characteristics on first run
+{{- $is_work := false -}}
+{{- $is_personal := false -}}
+{{- $is_vm := false -}}
+
+{{- if stdinIsATTY -}}
+{{-   $is_work = promptBoolOnce . "is_work" "Is this a work machine" -}}
+{{-   $is_personal = not $is_work -}}
+{{-   $is_vm = promptBoolOnce . "is_vm" "Is this a VM or container" -}}
+{{- else -}}
+{{-   $is_work = false -}}
+{{-   $is_personal = true -}}
+{{-   $is_vm = false -}}
+{{- end -}}
+
+# ─────────────────────────────────────────────────────
+# Encryption Configuration
+# ─────────────────────────────────────────────────────
 [age]
   identity = "~/.config/chezmoi/key.txt"
   recipient = "age1cl8mg4krjvyuk3syzk8jsqk095gnx7tnuxlrup3nsm9nhwtehezssu0nv0"
 
+# ─────────────────────────────────────────────────────
+# Tool Integration
+# ─────────────────────────────────────────────────────
 [onepassword]
     mode = "account"
 
@@ -20,8 +47,14 @@ encryption = "age"
     command = "code"
     args = ["--wait"]
 
+# ─────────────────────────────────────────────────────
+# Template Variables
+# ─────────────────────────────────────────────────────
 [data]
-osid = {{ $osid | quote }}
+    osid = {{ $osid | quote }}
+    is_work = {{ $is_work }}
+    is_personal = {{ $is_personal }}
+    is_vm = {{ $is_vm }}
 
 # Run a script to install password manager CLI before reading source state
 [hooks.read-source-state.pre]

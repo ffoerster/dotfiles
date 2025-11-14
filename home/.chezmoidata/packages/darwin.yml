@@ -1,0 +1,200 @@
+# macOS-specific packages (Homebrew)
+# Imported from Brewfile
+
+# Homebrew taps (additional repositories)
+taps:
+  - homebrew/cask-fonts
+  - archivebox/archivebox
+  - ddev/ddev
+  - emmercm/igir
+  - esolitos/ipa
+  - felixkratz/formulae
+  - garfieldius/taps
+  - koekeishiya/formulae
+  - rhettbull/osxphotos
+  - sikarugir-app/sikarugir
+  - supabase/tap
+
+# Homebrew formulas (CLI tools)
+brews:
+  # Core utilities
+  - age
+  - bash
+  - coreutils
+  - curl
+  - wget
+  - git
+  - gnupg
+  - gpgme
+
+  # Shell & Terminal
+  - fish
+  - zsh-autosuggestions
+  - zsh-completions
+  - zsh-fast-syntax-highlighting
+  - tmux
+  - tmuxp
+  - reattach-to-user-namespace
+  - sesh
+  - starship
+
+  # Modern CLI tools
+  - bat
+  - bottom
+  - btop
+  - duf
+  - dust
+  - eza
+  - fastfetch
+  - fzf
+  - htop
+  - lsd
+  - neofetch
+  - ripgrep
+  - zoxide
+
+  # Editors
+  - helix
+  - neovim
+
+  # Development tools
+  - ansible
+  - chezmoi
+  - cmake
+  - gh
+  - lazydocker
+  - lazygit
+  - mas
+  - mkcert
+  - yadm
+  - tailscale
+
+  # Programming languages & package managers
+  - fnm              # Fast Node Manager
+  - node
+  - pkgconf
+  - rust
+  - virtualenv
+
+  # Python versions
+  - python@3.13
+
+  # PHP
+  - php
+  - php@8.3
+
+  # Database tools
+  - libpq
+
+  # Image/Video processing
+  - cairo
+  - ffmpeg
+  - giflib
+  - graphviz
+  - icu4c@76
+  - jpeg
+  - libpng
+  - librsvg
+  - pango
+  - poppler
+  - tesseract
+  - libtiff
+  - zstd
+
+  # System utilities
+  - biome
+  - cosign
+  - hugo
+  - llvm
+  - lua
+  - nss
+  - sevenzip
+  - six
+  - sonic
+  - speedtest-cli
+  - switchaudio-osx
+  - syft
+  - testdisk
+  - nowplaying-cli
+
+  # Email tools
+  - imap-backup
+  - imapsync
+
+  # Media
+  - yt-dlp
+
+  # Third-party taps
+  - ddev/ddev/ddev
+  - esolitos/ipa/sshpass
+  - felixkratz/formulae/borders
+  - felixkratz/formulae/sketchybar
+  - garfieldius/taps/t3ll
+  - koekeishiya/formulae/skhd
+  - rhettbull/osxphotos/osxphotos
+  - supabase/tap/supabase
+
+# Homebrew casks (GUI applications)
+casks:
+  # Essentials
+  - 1password
+  - 1password-cli
+  - raycast
+  - visual-studio-code
+
+  # Browsers & Communication
+  - arc
+  - slack
+  - spotify
+  - telegram
+
+  # Development
+  - cyberduck
+  - insomnia
+  - jetbrains-toolbox
+  - sequel-ace
+  - tower
+  - transmit
+
+  # Creative
+  - affinity-designer
+  - affinity-photo
+  - affinity-publisher
+  - obs
+  - obsidian
+
+  # Productivity
+  - clickup
+  - meetily
+  - meetingbar
+
+  # Gaming
+  - openra
+
+  # macOS utilities
+  - sf-symbols
+  - sikarugir
+
+# Mac App Store apps (requires 'mas' CLI)
+mas_apps:
+  - id: 1569813296
+    name: "1Password for Safari"
+  - id: 1465180184
+    name: "GeoTag"
+  - id: 1295203466
+    name: "Microsoft Remote Desktop"
+  - id: 1475387142
+    name: "Tailscale"
+  - id: 425424353
+    name: "The Unarchiver"
+  - id: 1230249825
+    name: "VMware Remote Console"
+
+# Fonts (casks from homebrew/cask-fonts)
+fonts:
+  - font-hack-nerd-font
+  - font-iosevka
+  - font-iosevka-nerd-font
+  - font-monaspace
+  - font-sf-mono
+  - font-sf-pro

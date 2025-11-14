@@ -1,0 +1,39 @@
+# Common Linux packages (available on most distributions)
+
+# Core system utilities
+system:
+  - curl
+  - wget
+  - git
+  - unzip
+  - tar
+  - gzip
+  - xz-utils  # or xz on some distros
+  - tree
+  - htop
+  - tmux
+  - zsh
+
+# Development tools
+development:
+  - build-essential  # Debian/Ubuntu (gcc, make, etc.)
+  - neovim
+  - docker
+  - docker-compose
+  - python3
+  - python3-pip
+
+# CLI utilities
+cli_tools:
+  - jq
+  - ripgrep
+  - fd-find  # Debian/Ubuntu (fd on others)
+  - bat
+  - fzf
+
+# Network tools
+network:
+  - openssh-client
+  - net-tools
+  - dnsutils
+  - traceroute

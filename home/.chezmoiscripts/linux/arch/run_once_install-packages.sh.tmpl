@@ -1,0 +1,136 @@
+#!/usr/bin/env bash
+# Install Arch Linux packages from YAML configuration
+
+set -euo pipefail
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+header() {
+    echo -e "${BLUE}==>${NC} ${GREEN}$1${NC}"
+}
+
+notice() {
+    echo -e "${YELLOW}==>${NC} $1"
+}
+
+error() {
+    echo -e "${RED}Error:${NC} $1" >&2
+}
+
+PACKAGES_FILE="{{ .chezmoi.sourceDir }}/.chezmoidata/packages/linux/arch.yml"
+
+if [[ ! -f "$PACKAGES_FILE" ]]; then
+    error "Package file not found: $PACKAGES_FILE"
+    exit 1
+fi
+
+# Check if yq is available (needed to parse YAML)
+if ! command -v yq &>/dev/null; then
+    notice "yq not found, installing via pacman..."
+    sudo pacman -S --noconfirm yq
+fi
+
+header "Installing Arch Linux packages from arch.yml"
+
+# Update package database
+header "Updating package database..."
+sudo pacman -Sy
+
+# Install pacman packages
+notice "Installing pacman packages..."
+pacman_pkgs=$(yq eval '.pacman[]' "$PACKAGES_FILE" 2>/dev/null || echo "")
+if [[ -n "$pacman_pkgs" ]]; then
+    to_install=()
+    while IFS= read -r pkg; do
+        if [[ -n "$pkg" && "$pkg" != "null" ]]; then
+            if pacman -Qi "$pkg" &>/dev/null; then
+                notice "Already installed: $pkg"
+            else
+                to_install+=("$pkg")
+            fi
+        fi
+    done <<< "$pacman_pkgs"
+
+    if [[ ${#to_install[@]} -gt 0 ]]; then
+        header "Installing ${#to_install[@]} pacman packages..."
+        sudo pacman -S --noconfirm "${to_install[@]}" || error "Failed to install some packages"
+    fi
+fi
+
+# Determine AUR helper (paru preferred, fallback to yay)
+AUR_HELPER=""
+if command -v paru &>/dev/null; then
+    AUR_HELPER="paru"
+elif command -v yay &>/dev/null; then
+    AUR_HELPER="yay"
+else
+    notice "No AUR helper found. Installing paru..."
+
+    # Install paru if not present
+    if ! command -v paru &>/dev/null; then
+        header "Building paru from AUR..."
+        temp_dir=$(mktemp -d)
+        cd "$temp_dir"
+        git clone https://aur.archlinux.org/paru-bin.git
+        cd paru-bin
+        makepkg -si --noconfirm
+        cd ~
+        rm -rf "$temp_dir"
+        AUR_HELPER="paru"
+    fi
+fi
+
+# Install AUR packages
+if [[ -n "$AUR_HELPER" ]]; then
+    notice "Installing AUR packages using $AUR_HELPER..."
+    aur_pkgs=$(yq eval '.aur[]' "$PACKAGES_FILE" 2>/dev/null || echo "")
+    if [[ -n "$aur_pkgs" ]]; then
+        to_install=()
+        while IFS= read -r pkg; do
+            if [[ -n "$pkg" && "$pkg" != "null" ]]; then
+                if pacman -Qi "$pkg" &>/dev/null; then
+                    notice "Already installed: $pkg"
+                else
+                    to_install+=("$pkg")
+                fi
+            fi
+        done <<< "$aur_pkgs"
+
+        if [[ ${#to_install[@]} -gt 0 ]]; then
+            header "Installing ${#to_install[@]} AUR packages..."
+            $AUR_HELPER -S --noconfirm "${to_install[@]}" || error "Failed to install some AUR packages"
+        fi
+    fi
+fi
+
+{{ if not .is_vm }}
+# Install GUI packages (only on desktop systems, not VMs)
+notice "Installing GUI packages (desktop mode)..."
+gui_pkgs=$(yq eval '.gui_packages[]' "$PACKAGES_FILE" 2>/dev/null || echo "")
+if [[ -n "$gui_pkgs" ]]; then
+    to_install=()
+    while IFS= read -r pkg; do
+        if [[ -n "$pkg" && "$pkg" != "null" ]]; then
+            if pacman -Qi "$pkg" &>/dev/null; then
+                notice "Already installed: $pkg"
+            else
+                to_install+=("$pkg")
+            fi
+        fi
+    done <<< "$gui_pkgs"
+
+    if [[ ${#to_install[@]} -gt 0 ]]; then
+        header "Installing ${#to_install[@]} GUI packages..."
+        sudo pacman -S --noconfirm "${to_install[@]}" || error "Failed to install some GUI packages"
+    fi
+fi
+{{ end }}
+
+header "Package installation complete!"
+
+echo -e "${GREEN}✓${NC} All packages installed successfully!"

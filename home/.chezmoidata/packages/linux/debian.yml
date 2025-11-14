@@ -1,0 +1,67 @@
+# Debian/Ubuntu specific packages (for VMs)
+
+# APT packages
+apt:
+  # Build essentials
+  - build-essential
+  - git
+  - curl
+  - wget
+  - unzip
+  - tar
+  - gzip
+  - xz-utils
+  - zsh
+  - tmux
+  - neovim
+  - htop
+  - tree
+
+  # Modern CLI tools (some via backports or external repos)
+  - ripgrep
+  - fd-find  # Note: binary is 'fdfind' on Debian/Ubuntu
+  - bat      # Note: binary is 'batcat' on Debian/Ubuntu
+  - jq
+  - fzf
+
+  # Development
+  - docker.io
+  - docker-compose
+  - ansible
+  - python3
+  - python3-pip
+  - python3-venv
+  - nodejs
+  - npm
+
+  # System utilities
+  - openssh-client
+  - openssh-server  # For VMs that need SSH access
+  - net-tools
+  - dnsutils
+  - traceroute
+  - man-db
+  - software-properties-common  # For managing PPAs
+
+# External repositories / manual installations
+external:
+  # These might need to be installed via script
+  - name: eza
+    method: "cargo install eza"  # or download binary
+  - name: zoxide
+    method: "cargo install zoxide"  # or download binary
+  - name: 1password-cli
+    method: "script"  # Requires 1Password's official script
+
+# VM-specific optimizations (minimal install)
+vm_exclude:
+  # Packages to skip on VMs to save space
+  - nodejs  # Only if not doing Node development
+  - npm
+  # - docker.io  # Uncomment if VMs don't need Docker
+
+# Desktop packages (only for non-VM Debian systems)
+desktop:
+  - firefox-esr
+  - alacritty
+  # - code  # VS Code (requires Microsoft's repo)

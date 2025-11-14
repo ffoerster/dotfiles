@@ -71,3 +71,34 @@ dot_config/paru/**
 .chezmoiscripts/linux/debian/**
 .chezmoidata/packages/linux/debian.yaml
 {{ end }}
+
+# ─────────────────────────────
+# Work vs Personal machine ignores
+# ─────────────────────────────
+{{ if .is_work }}
+# Ignore personal-only configs on work machines
+.config/personal/**
+dot_config/personal/**
+{{ else }}
+# Ignore work-only configs on personal machines
+.config/work/**
+dot_config/work/**
+{{ end }}
+
+# ─────────────────────────────
+# VM-specific ignores
+# ─────────────────────────────
+{{ if .is_vm }}
+# Ignore GUI apps and desktop configs on VMs
+.config/alacritty/**
+.config/kitty/**
+.config/wezterm/**
+Library/**
+Applications/**
+
+# Ignore resource-heavy tools on VMs
+.config/docker/  # If not doing development
+{{ else }}
+# Ignore VM-only optimizations on bare metal
+.config/vm-optimizations/**
+{{ end }}
