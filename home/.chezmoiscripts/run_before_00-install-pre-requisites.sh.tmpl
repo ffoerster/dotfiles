@@ -53,6 +53,71 @@ header "✓ Homebrew is ready"
 
 {{ if eq .chezmoi.os "linux" }}
 
+{{- if and (hasKey .chezmoi.osRelease "id") (eq .chezmoi.osRelease.id "arch") }}
+
+# ============================================================================
+# ARCH LINUX PRE-REQUISITES
+# ============================================================================
+
+install=false
+
+# Declare packages needed for Arch Linux
+declare -a packages=(
+    "curl"
+    "wget"
+    "unzip"
+    "git"
+    "base-devel"  # Required for building AUR packages
+)
+
+to_install=()
+
+# Check which packages are missing
+for pkg in "${packages[@]}"; do
+    if ! pacman -Q "${pkg}" &>/dev/null; then
+        install=true
+        to_install+=("${pkg}")
+    fi
+done
+
+# Install missing packages with pacman
+if ${install}; then
+    header "Installing pre-requisite packages with pacman"
+    sudo pacman -S --needed --noconfirm "${to_install[@]}"
+fi
+
+# Install paru (AUR helper) if not present
+if ! command -v paru &>/dev/null; then
+    header "Installing paru (AUR helper)"
+
+    # Create temporary directory for building paru
+    PARU_BUILD_DIR=$(mktemp -d)
+
+    notice "Cloning paru repository..."
+    git clone https://aur.archlinux.org/paru.git "$PARU_BUILD_DIR"
+
+    cd "$PARU_BUILD_DIR"
+
+    notice "Building and installing paru..."
+    makepkg -si --noconfirm
+
+    cd -
+    rm -rf "$PARU_BUILD_DIR"
+
+    if command -v paru &>/dev/null; then
+        header "✓ paru installed successfully"
+    else
+        error "Failed to install paru"
+        notice "You can manually install an AUR helper later"
+    fi
+fi
+
+{{- else }}
+
+# ============================================================================
+# DEBIAN/UBUNTU PRE-REQUISITES
+# ============================================================================
+
 install=false
 
 # Declare a regular array for the package names
@@ -82,6 +147,8 @@ if ${install}; then
         sudo apt install -y "${pkg}"
     done
 fi
+
+{{- end }}
 
 {{ end }}
 
