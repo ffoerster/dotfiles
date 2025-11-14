@@ -1,5 +1,20 @@
 # Debian/Ubuntu specific packages (for VMs)
 
+# ============================================================================
+# REMOVAL SECTION
+# ============================================================================
+# Packages to be removed/uninstalled (cleanup unwanted packages)
+# Removal happens BEFORE installation
+
+remove:
+  apt: []
+  # Example: - old-package
+  # Example: - bloatware
+
+# ============================================================================
+# INSTALLATION SECTION
+# ============================================================================
+
 # APT packages
 apt:
   # Build essentials

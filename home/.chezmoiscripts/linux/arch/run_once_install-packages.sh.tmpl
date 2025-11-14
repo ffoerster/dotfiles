@@ -35,7 +35,62 @@ if ! command -v yq &>/dev/null; then
     sudo pacman -S --noconfirm yq
 fi
 
-header "Installing Arch Linux packages from arch.yml"
+header "Processing Arch Linux packages from arch.yml"
+
+# ============================================================================
+# REMOVAL SECTION - Remove unwanted packages first
+# ============================================================================
+notice "Checking for packages to remove..."
+
+# Remove pacman packages
+remove_pacman=$(yq eval '.remove.pacman[]' "$PACKAGES_FILE" 2>/dev/null || echo "")
+if [[ -n "$remove_pacman" ]]; then
+    to_remove=()
+    while IFS= read -r pkg; do
+        if [[ -n "$pkg" && "$pkg" != "null" ]]; then
+            if pacman -Qi "$pkg" &>/dev/null; then
+                to_remove+=("$pkg")
+            else
+                notice "Not installed (skip): $pkg"
+            fi
+        fi
+    done <<< "$remove_pacman"
+
+    if [[ ${#to_remove[@]} -gt 0 ]]; then
+        header "Removing ${#to_remove[@]} pacman packages..."
+        sudo pacman -R --noconfirm "${to_remove[@]}" || error "Failed to remove some packages"
+    fi
+fi
+
+# Remove AUR packages (if paru/yay is available)
+if command -v paru &>/dev/null || command -v yay &>/dev/null; then
+    remove_aur=$(yq eval '.remove.aur[]' "$PACKAGES_FILE" 2>/dev/null || echo "")
+    if [[ -n "$remove_aur" ]]; then
+        to_remove=()
+        while IFS= read -r pkg; do
+            if [[ -n "$pkg" && "$pkg" != "null" ]]; then
+                if pacman -Qi "$pkg" &>/dev/null; then
+                    to_remove+=("$pkg")
+                else
+                    notice "Not installed (skip): $pkg"
+                fi
+            fi
+        done <<< "$remove_aur"
+
+        if [[ ${#to_remove[@]} -gt 0 ]]; then
+            header "Removing ${#to_remove[@]} AUR packages..."
+            if command -v paru &>/dev/null; then
+                paru -R --noconfirm "${to_remove[@]}" || error "Failed to remove some AUR packages"
+            else
+                yay -R --noconfirm "${to_remove[@]}" || error "Failed to remove some AUR packages"
+            fi
+        fi
+    fi
+fi
+
+# ============================================================================
+# INSTALLATION SECTION
+# ============================================================================
 
 # Update package database
 header "Updating package database..."

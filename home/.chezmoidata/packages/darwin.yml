@@ -1,6 +1,35 @@
 # macOS-specific packages (Homebrew)
 # Imported from Brewfile
 
+# ============================================================================
+# REMOVAL SECTION
+# ============================================================================
+# Packages to be removed/uninstalled (cleanup unwanted packages)
+# Add packages here that you want to remove from your system
+# Removal happens BEFORE installation
+
+remove:
+  brews: []
+  # Example: - old-package
+  # Example: - unused-tool
+
+  casks: [
+    - spotify
+    - jetbrains-toolbox
+    - tower
+    - transmit
+    - meetily
+    - openra
+  ]
+  # Example: - old-app
+
+  fonts: []
+  # Example: - font-old-font
+
+# ============================================================================
+# INSTALLATION SECTION
+# ============================================================================
+
 # Homebrew taps (additional repositories)
 taps:
   - homebrew/cask-fonts
@@ -145,16 +174,12 @@ casks:
   # Browsers & Communication
   - arc
   - slack
-  - spotify
   - telegram
 
   # Development
   - cyberduck
   - insomnia
-  - jetbrains-toolbox
   - sequel-ace
-  - tower
-  - transmit
 
   # Creative
   - affinity-designer
@@ -165,11 +190,7 @@ casks:
 
   # Productivity
   - clickup
-  - meetily
   - meetingbar
-
-  # Gaming
-  - openra
 
   # macOS utilities
   - sf-symbols
@@ -183,8 +204,6 @@ mas_apps:
     name: "GeoTag"
   - id: 1295203466
     name: "Microsoft Remote Desktop"
-  - id: 1475387142
-    name: "Tailscale"
   - id: 425424353
     name: "The Unarchiver"
   - id: 1230249825

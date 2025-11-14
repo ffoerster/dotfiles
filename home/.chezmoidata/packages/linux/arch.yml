@@ -1,5 +1,22 @@
 # Arch Linux specific packages
 
+# ============================================================================
+# REMOVAL SECTION
+# ============================================================================
+# Packages to be removed/uninstalled (cleanup unwanted packages)
+# Removal happens BEFORE installation
+
+remove:
+  pacman: []
+  # Example: - old-package
+
+  aur: []
+  # Example: - unused-aur-package
+
+# ============================================================================
+# INSTALLATION SECTION
+# ============================================================================
+
 # Official repositories (pacman)
 pacman:
   # Base development

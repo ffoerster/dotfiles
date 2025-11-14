@@ -28,6 +28,12 @@ if ! command -v brew &>/dev/null; then
     exit 1
 fi
 
+# Ensure yq is installed (required for parsing YAML)
+if ! command -v yq &>/dev/null; then
+    header "Installing yq (YAML parser)..."
+    brew install yq
+fi
+
 PACKAGES_FILE="{{ .chezmoi.sourceDir }}/.chezmoidata/packages/darwin.yml"
 
 if [[ ! -f "$PACKAGES_FILE" ]]; then
@@ -35,7 +41,61 @@ if [[ ! -f "$PACKAGES_FILE" ]]; then
     exit 1
 fi
 
-header "Installing Homebrew packages from darwin.yml"
+header "Processing Homebrew packages from darwin.yml"
+
+# ============================================================================
+# REMOVAL SECTION - Remove unwanted packages first
+# ============================================================================
+notice "Checking for packages to remove..."
+
+# Remove brews
+remove_brews=$(yq eval '.remove.brews[]' "$PACKAGES_FILE" 2>/dev/null || echo "")
+if [[ -n "$remove_brews" ]]; then
+    while IFS= read -r formula; do
+        if [[ -n "$formula" && "$formula" != "null" ]]; then
+            if brew list "$formula" &>/dev/null; then
+                header "Removing formula: $formula"
+                brew uninstall "$formula" || error "Failed to remove $formula"
+            else
+                notice "Not installed (skip): $formula"
+            fi
+        fi
+    done <<< "$remove_brews"
+fi
+
+# Remove casks
+remove_casks=$(yq eval '.remove.casks[]' "$PACKAGES_FILE" 2>/dev/null || echo "")
+if [[ -n "$remove_casks" ]]; then
+    while IFS= read -r cask; do
+        if [[ -n "$cask" && "$cask" != "null" ]]; then
+            if brew list --cask "$cask" &>/dev/null; then
+                header "Removing cask: $cask"
+                brew uninstall --cask "$cask" || error "Failed to remove $cask"
+            else
+                notice "Not installed (skip): $cask"
+            fi
+        fi
+    done <<< "$remove_casks"
+fi
+
+# Remove fonts
+remove_fonts=$(yq eval '.remove.fonts[]' "$PACKAGES_FILE" 2>/dev/null || echo "")
+if [[ -n "$remove_fonts" ]]; then
+    while IFS= read -r font; do
+        if [[ -n "$font" && "$font" != "null" ]]; then
+            if brew list --cask "$font" &>/dev/null; then
+                header "Removing font: $font"
+                brew uninstall --cask "$font" || error "Failed to remove $font"
+            else
+                notice "Not installed (skip): $font"
+            fi
+        fi
+    done <<< "$remove_fonts"
+fi
+
+# ============================================================================
+# INSTALLATION SECTION
+# ============================================================================
 
 # Parse YAML and install taps
 notice "Adding Homebrew taps..."

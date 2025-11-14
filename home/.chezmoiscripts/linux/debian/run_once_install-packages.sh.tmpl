@@ -39,7 +39,37 @@ if ! command -v yq &>/dev/null; then
     sudo chmod +x /usr/local/bin/yq
 fi
 
-header "Installing Debian/Ubuntu packages from debian.yml"
+header "Processing Debian/Ubuntu packages from debian.yml"
+
+# ============================================================================
+# REMOVAL SECTION - Remove unwanted packages first
+# ============================================================================
+notice "Checking for packages to remove..."
+
+# Remove APT packages
+remove_apt=$(yq eval '.remove.apt[]' "$PACKAGES_FILE" 2>/dev/null || echo "")
+if [[ -n "$remove_apt" ]]; then
+    to_remove=()
+    while IFS= read -r pkg; do
+        if [[ -n "$pkg" && "$pkg" != "null" ]]; then
+            if dpkg -l "$pkg" 2>/dev/null | grep -q "^ii"; then
+                to_remove+=("$pkg")
+            else
+                notice "Not installed (skip): $pkg"
+            fi
+        fi
+    done <<< "$remove_apt"
+
+    if [[ ${#to_remove[@]} -gt 0 ]]; then
+        header "Removing ${#to_remove[@]} APT packages..."
+        sudo apt remove -y "${to_remove[@]}" || error "Failed to remove some packages"
+        sudo apt autoremove -y
+    fi
+fi
+
+# ============================================================================
+# INSTALLATION SECTION
+# ============================================================================
 
 # Update package database
 header "Updating package list..."
