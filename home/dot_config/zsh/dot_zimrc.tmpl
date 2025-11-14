@@ -1,0 +1,69 @@
+# ============================================================================
+# ZIM - ZSH IMproved FrameWork Configuration
+# ============================================================================
+# Start configuration added by Zim install
+#
+# This file configures the Zim framework
+# See: https://github.com/zimfw/zimfw
+
+# ============================================================================
+# ZIM MODULES
+# ============================================================================
+
+# Environment
+zmodule environment
+
+# Utility functions and aliases
+zmodule utility
+
+# ============================================================================
+# PROMPT
+# ============================================================================
+# Using Starship instead of Zim prompt modules
+# Starship is initialized in 60-tools.zsh
+
+# ============================================================================
+# COMPLETION
+# ============================================================================
+# Additional completion definitions
+zmodule zsh-users/zsh-completions --fpath src
+
+# Completion enhancements
+zmodule completion
+
+# ============================================================================
+# MODULES
+# ============================================================================
+
+# Archive extraction
+zmodule archive
+
+# Git aliases and functions
+zmodule git
+
+{{ if eq .chezmoi.os "darwin" }}
+# macOS-specific
+zmodule homebrew
+{{ end }}
+
+# Directory navigation
+zmodule fzf
+
+# ============================================================================
+# SYNTAX HIGHLIGHTING & SUGGESTIONS
+# ============================================================================
+
+# Fish-like syntax highlighting (must be near end)
+zmodule zsh-users/zsh-syntax-highlighting
+
+# Fish-like autosuggestions (must be last)
+zmodule zsh-users/zsh-autosuggestions
+
+# ============================================================================
+# HISTORY SEARCH
+# ============================================================================
+
+# Fish-like history search (up arrow)
+zmodule zsh-users/zsh-history-substring-search
+
+# End configuration added by Zim install

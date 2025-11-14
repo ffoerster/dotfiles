@@ -1,0 +1,93 @@
+# ============================================================================
+# ENVIRONMENT VARIABLES
+# ============================================================================
+# Core environment setup - PATH, exports, etc.
+
+# ============================================================================
+# CORE PATHS
+# ============================================================================
+
+# Homebrew prefix (OS-specific)
+{{- if eq .chezmoi.os "darwin" }}
+export BREW_PREFIX="/opt/homebrew"
+{{- else if eq .chezmoi.os "linux" }}
+export BREW_PREFIX="/home/linuxbrew/.linuxbrew"
+{{- end }}
+
+# User binaries
+export USER_BIN_DIR="${HOME}/.local/bin"
+
+# Add user bin to PATH if not already there
+[[ ":$PATH:" != *":${USER_BIN_DIR}:"* ]] && export PATH="${USER_BIN_DIR}:$PATH"
+
+# ============================================================================
+# XDG BASE DIRECTORY
+# ============================================================================
+# Follow XDG Base Directory specification
+export XDG_CONFIG_HOME="${HOME}/.config"
+export XDG_DATA_HOME="${HOME}/.local/share"
+export XDG_CACHE_HOME="${HOME}/.cache"
+export XDG_STATE_HOME="${HOME}/.local/state"
+
+# ============================================================================
+# ZSH CONFIGURATION
+# ============================================================================
+export ZDOTDIR="${XDG_CONFIG_HOME}/zsh"
+export ZSH_CACHE_DIR="${XDG_CACHE_HOME}/zsh"
+
+# Create cache directory if it doesn't exist
+[[ -d "$ZSH_CACHE_DIR" ]] || mkdir -p "$ZSH_CACHE_DIR"
+
+# ============================================================================
+# EDITOR
+# ============================================================================
+# Set default editor
+if command -v nvim >/dev/null 2>&1; then
+    export EDITOR="nvim"
+    export VISUAL="nvim"
+elif command -v vim >/dev/null 2>&1; then
+    export EDITOR="vim"
+    export VISUAL="vim"
+else
+    export EDITOR="nano"
+    export VISUAL="nano"
+fi
+
+# ============================================================================
+# LOCALE
+# ============================================================================
+export LANG="en_US.UTF-8"
+export LC_ALL="en_US.UTF-8"
+
+# ============================================================================
+# SECURITY
+# ============================================================================
+# GPG TTY for signing
+export GPG_TTY="$(tty)"
+
+# ============================================================================
+# PAGER
+# ============================================================================
+# Use bat as pager if available
+if command -v bat >/dev/null 2>&1; then
+    export PAGER="bat"
+    export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+else
+    export PAGER="less"
+fi
+
+# ============================================================================
+# HISTORY
+# ============================================================================
+export HISTFILE="${ZDOTDIR}/.zsh_history"
+export HISTSIZE=50000
+export SAVEHIST=50000
+
+# ============================================================================
+# MISC
+# ============================================================================
+# Disable Homebrew analytics
+export HOMEBREW_NO_ANALYTICS=1
+
+# Disable Homebrew auto-update
+export HOMEBREW_NO_AUTO_UPDATE=1

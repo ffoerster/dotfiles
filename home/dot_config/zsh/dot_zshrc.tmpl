@@ -1,0 +1,71 @@
+# ============================================================================
+# .zshrc - ZSH Configuration File
+# ============================================================================
+# Managed by chezmoi - changes will be synced across machines
+# Using Zim framework for fast, modular ZSH configuration
+#
+# Structure:
+#   .zshenv → .zshrc (this file) → modules/*.zsh
+# ============================================================================
+
+# ============================================================================
+# PERFORMANCE MONITORING (Optional)
+# ============================================================================
+# Uncomment to profile zsh startup time
+# zmodload zsh/zprof
+
+# ============================================================================
+# ZIM FRAMEWORK
+# ============================================================================
+# Download zimfw plugin manager if missing
+if [[ ! -e ${ZDOTDIR:-${HOME}}/.zim ]]; then
+    curl -fsSL --create-dirs -o ${ZDOTDIR:-${HOME}}/.zim/zimfw.zsh \
+        https://github.com/zimfw/zimfw/releases/latest/download/zimfw.zsh
+fi
+
+# Install missing modules and update ${ZDOTDIR:-${HOME}}/.zim/init.zsh if missing or outdated
+if [[ ! ${ZDOTDIR:-${HOME}}/.zim/init.zsh -nt ${ZDOTDIR:-${HOME}}/.zimrc ]]; then
+    source ${ZDOTDIR:-${HOME}}/.zim/zimfw.zsh init -q
+fi
+
+# Initialize Zim modules
+source ${ZDOTDIR:-${HOME}}/.zim/init.zsh
+
+# ============================================================================
+# LOAD CUSTOM MODULES
+# ============================================================================
+# Modules are loaded in numerical order for dependency management
+
+# Set module directory
+ZSH_MODULES_DIR="${ZDOTDIR}/modules"
+
+# Core environment and configuration
+[[ -f "${ZSH_MODULES_DIR}/00-env.zsh" ]] && source "${ZSH_MODULES_DIR}/00-env.zsh"
+[[ -f "${ZSH_MODULES_DIR}/10-options.zsh" ]] && source "${ZSH_MODULES_DIR}/10-options.zsh"
+
+# User customizations
+[[ -f "${ZSH_MODULES_DIR}/20-aliases.zsh" ]] && source "${ZSH_MODULES_DIR}/20-aliases.zsh"
+[[ -f "${ZSH_MODULES_DIR}/30-functions.zsh" ]] && source "${ZSH_MODULES_DIR}/30-functions.zsh"
+
+# System configuration
+[[ -f "${ZSH_MODULES_DIR}/40-completions.zsh" ]] && source "${ZSH_MODULES_DIR}/40-completions.zsh"
+[[ -f "${ZSH_MODULES_DIR}/50-keybindings.zsh" ]] && source "${ZSH_MODULES_DIR}/50-keybindings.zsh"
+
+# Tool initializations (slowest, load last)
+[[ -f "${ZSH_MODULES_DIR}/60-tools.zsh" ]] && source "${ZSH_MODULES_DIR}/60-tools.zsh"
+
+# OS-specific configuration
+{{- if eq .chezmoi.os "darwin" }}
+[[ -f "${ZSH_MODULES_DIR}/darwin.zsh" ]] && source "${ZSH_MODULES_DIR}/darwin.zsh"
+{{- else if eq .chezmoi.os "linux" }}
+[[ -f "${ZSH_MODULES_DIR}/linux.zsh" ]] && source "${ZSH_MODULES_DIR}/linux.zsh"
+{{- end }}
+
+# Machine-specific overrides (not tracked by chezmoi)
+[[ -f "${ZDOTDIR}/.zshrc.local" ]] && source "${ZDOTDIR}/.zshrc.local"
+
+# ============================================================================
+# PERFORMANCE MONITORING (Optional)
+# ============================================================================
+# Uncomment to see zsh startup profiling results
+# zprof

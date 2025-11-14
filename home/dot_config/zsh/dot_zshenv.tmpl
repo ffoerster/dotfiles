@@ -1,0 +1,65 @@
+# ============================================================================
+# .zshenv - ZSH Environment File
+# ============================================================================
+# This file is ALWAYS sourced first by ZSH
+# Use it for environment variables that should be available to all processes
+#
+# Loading order: .zshenv → .zprofile → .zshrc → .zlogin
+# ============================================================================
+
+# ============================================================================
+# XDG BASE DIRECTORY SPECIFICATION
+# ============================================================================
+export XDG_CONFIG_HOME="${HOME}/.config"
+export XDG_DATA_HOME="${HOME}/.local/share"
+export XDG_CACHE_HOME="${HOME}/.cache"
+export XDG_STATE_HOME="${HOME}/.local/state"
+
+# ============================================================================
+# ZSH CONFIGURATION
+# ============================================================================
+# Set ZDOTDIR to use XDG_CONFIG_HOME
+export ZDOTDIR="${XDG_CONFIG_HOME}/zsh"
+
+# Set ZIM_HOME for Zim framework
+export ZIM_HOME="${ZDOTDIR}/.zim"
+
+# ============================================================================
+# PATH
+# ============================================================================
+# Essential PATH additions (detailed PATH setup in modules/00-env.zsh)
+
+# User binaries
+typeset -U path
+path=(
+    "${HOME}/.local/bin"
+    $path
+)
+
+# ============================================================================
+# HOMEBREW
+# ============================================================================
+# Initialize Homebrew early for other tools to use
+
+{{- if eq .chezmoi.os "darwin" }}
+# macOS (Apple Silicon)
+if [[ -x "/opt/homebrew/bin/brew" ]]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+# macOS (Intel)
+elif [[ -x "/usr/local/bin/brew" ]]; then
+    eval "$(/usr/local/bin/brew shellenv)"
+fi
+{{- else if eq .chezmoi.os "linux" }}
+# Linux
+if [[ -x "/home/linuxbrew/.linuxbrew/bin/brew" ]]; then
+    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+fi
+{{- end }}
+
+# ============================================================================
+# ESSENTIAL ENVIRONMENT VARIABLES
+# ============================================================================
+# Critical env vars that need to be set early
+
+# Skip global compinit in Ubuntu
+skip_global_compinit=1

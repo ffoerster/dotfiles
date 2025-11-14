@@ -1,0 +1,11 @@
+# ============================================================================
+# .zshenv - ZSH Environment File (Home Directory Symlink)
+# ============================================================================
+# This file redirects to the XDG-compliant location
+# Real configuration is in ~/.config/zsh/.zshenv
+# ============================================================================
+
+# Source the real .zshenv from XDG_CONFIG_HOME
+if [[ -f "${HOME}/.config/zsh/.zshenv" ]]; then
+    source "${HOME}/.config/zsh/.zshenv"
+fi
