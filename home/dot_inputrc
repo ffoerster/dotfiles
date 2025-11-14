@@ -1,0 +1,152 @@
+# ============================================================================
+# .inputrc - Readline Configuration
+# ============================================================================
+# Managed by chezmoi - Readline library configuration for bash and other programs
+#
+# This file controls the behavior of the GNU Readline library used by bash
+# and many other command-line programs (like Python REPL, MySQL client, etc.)
+# ============================================================================
+
+# ============================================================================
+# GENERAL SETTINGS
+# ============================================================================
+
+# Use Vi or Emacs mode for line editing
+set editing-mode emacs
+
+# Ignore case when completing
+set completion-ignore-case on
+
+# Treat hyphens and underscores as equivalent when completing
+set completion-map-case on
+
+# Show all completions immediately
+set show-all-if-ambiguous on
+
+# Show extra file information when completing (like ls -F)
+set visible-stats on
+
+# Mark symlinked directories with a trailing slash
+set mark-symlinked-directories on
+
+# Color file completions based on LS_COLORS
+set colored-stats on
+
+# Show file type indicators
+set colored-completion-prefix on
+
+# Immediately show completions on partial completion
+set show-all-if-unmodified on
+
+# Display possible completions using different colors
+set colored-stats on
+
+# Number of completions to show before asking
+set completion-query-items 200
+
+# Word separators for completion (don't break on these characters)
+set completion-word-separators " \t\n\"\\'`@$><=;|&{("
+
+# ============================================================================
+# BELLS
+# ============================================================================
+
+# Don't ring bell on completion
+set bell-style none
+
+# ============================================================================
+# HISTORY
+# ============================================================================
+
+# Add to end of history file, don't overwrite
+set history-preserve-point on
+
+# Do not autocomplete hidden files unless pattern explicitly begins with dot
+set match-hidden-files off
+
+# ============================================================================
+# KEYBINDINGS
+# ============================================================================
+
+# Allow UTF-8 input and output
+set input-meta on
+set output-meta on
+set convert-meta off
+
+# Use the text that has already been typed as the prefix for searching through
+# commands (i.e. more intelligent Up/Down behavior)
+"\e[A": history-search-backward
+"\e[B": history-search-forward
+
+# Ctrl+Left/Right to move by words
+"\e[1;5C": forward-word
+"\e[1;5D": backward-word
+
+# Ctrl+Delete to delete word forward
+"\e[3;5~": kill-word
+
+# Ctrl+Backspace to delete word backward
+"\C-H": backward-kill-word
+
+# Alt+Left/Right to move by words (alternative binding)
+"\e[1;3C": forward-word
+"\e[1;3D": backward-word
+
+# Shift+Tab to cycle backward through completions
+"\e[Z": menu-complete-backward
+
+# ============================================================================
+# COMPLETION BEHAVIOR
+# ============================================================================
+
+# Perform file completion in a case insensitive fashion
+set completion-ignore-case on
+
+# Treat hyphens and underscores as equivalent
+set completion-map-case on
+
+# Display matches for ambiguous patterns at first tab press
+set show-all-if-ambiguous on
+
+# Enable menu-complete to cycle through completions
+# Uncomment the following lines to enable cycling with Tab
+# set menu-complete-display-prefix on
+# TAB: menu-complete
+
+# ============================================================================
+# CONDITIONAL SETTINGS
+# ============================================================================
+
+# Python-specific settings
+$if Python
+    set editing-mode emacs
+$endif
+
+# MySQL-specific settings
+$if Mysql
+    set completion-ignore-case on
+$endif
+
+# SSH-specific settings
+$if Ssh
+    set completion-ignore-case on
+$endif
+
+# ============================================================================
+# MISCELLANEOUS
+# ============================================================================
+
+# Enable 8-bit input/output
+set meta-flag on
+set input-meta on
+set output-meta on
+set convert-meta off
+
+# Expand tilde to full path
+set expand-tilde on
+
+# Skip completed text when jumping
+set skip-completed-text on
+
+# Blink matching parentheses
+set blink-matching-paren on

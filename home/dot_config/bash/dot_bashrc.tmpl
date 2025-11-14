@@ -1,0 +1,62 @@
+# ============================================================================
+# .bashrc - Bash Configuration File
+# ============================================================================
+# Managed by chezmoi - changes will be synced across machines
+# Modular Bash configuration for Arch Linux
+#
+# Structure:
+#   .bash_profile → .bashrc (this file) → modules/*.bash
+# ============================================================================
+
+# If not running interactively, don't do anything
+[[ $- != *i* ]] && return
+
+# ============================================================================
+# BASH CONFIGURATION DIRECTORY
+# ============================================================================
+BASH_CONFIG_DIR="${HOME}/.config/bash"
+BASH_MODULES_DIR="${BASH_CONFIG_DIR}/modules"
+
+# ============================================================================
+# LOAD CUSTOM MODULES
+# ============================================================================
+# Modules are loaded in numerical order for dependency management
+
+# Core environment and configuration
+[[ -f "${BASH_MODULES_DIR}/00-env.bash" ]] && source "${BASH_MODULES_DIR}/00-env.bash"
+[[ -f "${BASH_MODULES_DIR}/10-options.bash" ]] && source "${BASH_MODULES_DIR}/10-options.bash"
+
+# User customizations
+[[ -f "${BASH_MODULES_DIR}/20-aliases.bash" ]] && source "${BASH_MODULES_DIR}/20-aliases.bash"
+[[ -f "${BASH_MODULES_DIR}/30-functions.bash" ]] && source "${BASH_MODULES_DIR}/30-functions.bash"
+
+# System configuration
+[[ -f "${BASH_MODULES_DIR}/40-completions.bash" ]] && source "${BASH_MODULES_DIR}/40-completions.bash"
+[[ -f "${BASH_MODULES_DIR}/50-readline.bash" ]] && source "${BASH_MODULES_DIR}/50-readline.bash"
+
+# Tool initializations (slowest, load last)
+[[ -f "${BASH_MODULES_DIR}/60-tools.bash" ]] && source "${BASH_MODULES_DIR}/60-tools.bash"
+
+# OS-specific configuration
+{{- if eq .chezmoi.os "linux" }}
+[[ -f "${BASH_MODULES_DIR}/linux.bash" ]] && source "${BASH_MODULES_DIR}/linux.bash"
+  {{- if hasKey .chezmoi.osRelease "id" }}
+    {{- if eq .chezmoi.osRelease.id "arch" }}
+[[ -f "${BASH_MODULES_DIR}/arch.bash" ]] && source "${BASH_MODULES_DIR}/arch.bash"
+    {{- end }}
+  {{- end }}
+{{- end }}
+
+# Machine-specific overrides (not tracked by chezmoi)
+[[ -f "${BASH_CONFIG_DIR}/.bashrc.local" ]] && source "${BASH_CONFIG_DIR}/.bashrc.local"
+
+# ============================================================================
+# PERFORMANCE MONITORING (Optional)
+# ============================================================================
+# To profile bash startup time, add this to the top of the file:
+#   PS4='+ $(date "+%s.%N")\011 '
+#   exec 3>&2 2>/tmp/bashstart.$$.log
+#   set -x
+# And add this to the end:
+#   set +x
+#   exec 2>&3 3>&-

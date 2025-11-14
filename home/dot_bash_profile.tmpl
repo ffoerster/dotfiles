@@ -1,0 +1,40 @@
+{{- if and (eq .chezmoi.os "linux") (hasKey .chezmoi.osRelease "id") (eq .chezmoi.osRelease.id "arch") -}}
+# ============================================================================
+# .bash_profile - Arch Linux Bash Login Configuration
+# ============================================================================
+# Managed by chezmoi - sourced for login shells
+#
+# This file is only created on Arch Linux systems
+# Debian/Ubuntu and macOS use ZSH instead
+# ============================================================================
+
+# Source .bashrc if it exists
+if [ -f "${HOME}/.bashrc" ]; then
+    source "${HOME}/.bashrc"
+fi
+
+# ============================================================================
+# LOGIN SHELL SPECIFIC CONFIGURATION
+# ============================================================================
+
+# Add user's private bin to PATH if not already there
+if [ -d "${HOME}/.local/bin" ] && [[ ":$PATH:" != *":${HOME}/.local/bin:"* ]]; then
+    export PATH="${HOME}/.local/bin:$PATH"
+fi
+
+# Start X at login (uncomment if you want auto-start X)
+# if [ -z "${DISPLAY}" ] && [ "${XDG_VTNR}" -eq 1 ]; then
+#     exec startx
+# fi
+
+# ============================================================================
+# ENVIRONMENT VARIABLES FOR LOGIN SHELLS
+# ============================================================================
+
+# Ensure XDG directories exist
+[ -d "${HOME}/.config" ] || mkdir -p "${HOME}/.config"
+[ -d "${HOME}/.local/share" ] || mkdir -p "${HOME}/.local/share"
+[ -d "${HOME}/.cache" ] || mkdir -p "${HOME}/.cache"
+[ -d "${HOME}/.local/state" ] || mkdir -p "${HOME}/.local/state"
+
+{{- end -}}

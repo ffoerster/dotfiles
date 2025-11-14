@@ -1,0 +1,21 @@
+{{- if and (eq .chezmoi.os "linux") (hasKey .chezmoi.osRelease "id") (eq .chezmoi.osRelease.id "arch") -}}
+# ============================================================================
+# .bashrc - Arch Linux Bash Configuration
+# ============================================================================
+# Managed by chezmoi - symlink to ~/.config/bash/.bashrc
+#
+# This file is only created on Arch Linux systems
+# Debian/Ubuntu and macOS use ZSH instead
+# ============================================================================
+
+# Exit if not running interactively
+[[ $- != *i* ]] && return
+
+# Default Omarchy settings for Arch Linux
+source ~/.local/share/omarchy/default/bash/rc
+
+# Source the main bash configuration
+if [[ -f "${HOME}/.config/bash/.bashrc" ]]; then
+    source "${HOME}/.config/bash/.bashrc"
+fi
+{{- end -}}

@@ -26,13 +26,15 @@ pacman:
   - wget
   - unzip
   - tar
-  - zsh
+  - bash
+  - bash-completion
   - tmux
   - neovim
   - htop
   - tree
 
   # Modern CLI tools
+  - starship
   - ripgrep
   - fd
   - bat
