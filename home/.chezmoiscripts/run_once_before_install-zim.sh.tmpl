@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # Install Zim ZSH framework
+# Only runs on macOS and Debian/Ubuntu (NOT on Arch Linux which uses Bash)
 
 set -euo pipefail
 
@@ -21,6 +22,12 @@ notice() {
 error() {
     echo -e "${RED}Error:${NC} $1" >&2
 }
+
+{{- if and (eq .chezmoi.os "linux") (hasKey .chezmoi.osRelease "id") (eq .chezmoi.osRelease.id "arch") }}
+# Skip Zim installation on Arch Linux - uses Bash instead
+notice "Skipping Zim installation (Arch Linux uses Bash)"
+exit 0
+{{- end }}
 
 # Check if ZSH is installed
 if ! command -v zsh >/dev/null 2>&1; then

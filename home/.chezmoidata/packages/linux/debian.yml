@@ -73,6 +73,9 @@ vm_exclude:
   # Packages to skip on VMs to save space
   - nodejs  # Only if not doing Node development
   - npm
+  - python3
+  - python3-pip
+  - python3-venv
   # - docker.io  # Uncomment if VMs don't need Docker
 
 # Desktop packages (only for non-VM Debian systems)
