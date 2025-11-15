@@ -44,9 +44,6 @@ set colored-stats on
 # Number of completions to show before asking
 set completion-query-items 200
 
-# Word separators for completion (don't break on these characters)
-set completion-word-separators " \t\n\"\\'`@$><=;|&{("
-
 # ============================================================================
 # BELLS
 # ============================================================================

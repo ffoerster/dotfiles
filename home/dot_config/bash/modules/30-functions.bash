@@ -36,12 +36,13 @@ extract() {
 
 # Find file by name (case-insensitive)
 ff() {
-    find . -iname "*$1*"
+    find . -iname "*$1*" 2>/dev/null
 }
 
 # Find directory by name (case-insensitive)
-fd() {
-    find . -type d -iname "*$1*"
+# Note: Named fdir() to avoid conflict with fd-find binary
+fdir() {
+    find . -type d -iname "*$1*" 2>/dev/null
 }
 
 # ============================================================================
