@@ -8,13 +8,13 @@
 # ============================================================================
 
 # Create directory and cd into it
-mkcd() {
+function mkcd() {
     mkdir -p "$1" && cd "$1"
 }
 
 # Extract archives of various types
-extract() {
-    if [ -f "$1" ]; then
+function extract() {
+    if [[ -f "$1" ]]; then
         case "$1" in
             *.tar.bz2)   tar xjf "$1"     ;;
             *.tar.gz)    tar xzf "$1"     ;;
@@ -35,13 +35,13 @@ extract() {
 }
 
 # Find file by name (case-insensitive)
-ff() {
+function ff() {
     find . -iname "*$1*" 2>/dev/null
 }
 
 # Find directory by name (case-insensitive)
 # Note: Named fdir() to avoid conflict with fd-find binary
-fdir() {
+function fdir() {
     find . -type d -iname "*$1*" 2>/dev/null
 }
 
@@ -50,27 +50,27 @@ fdir() {
 # ============================================================================
 
 # Git add all and commit
-gac() {
+function gac() {
     git add --all && git commit -m "$*"
 }
 
 # Git add all, commit, and push
-gacp() {
+function gacp() {
     git add --all && git commit -m "$*" && git push
 }
 
 # Create new git branch and check it out
-gnb() {
+function gnb() {
     git checkout -b "$1"
 }
 
 # Git log with graph
-glog() {
+function glog() {
     git log --graph --pretty=format:'%C(yellow)%h%Creset %C(blue)%an%Creset %C(green)%ar%Creset - %s' --abbrev-commit
 }
 
 # Show git branch stats
-gbstats() {
+function gbstats() {
     git for-each-ref --sort=-committerdate --format='%(committerdate:short) %(refname:short)' refs/heads/
 }
 
@@ -79,17 +79,17 @@ gbstats() {
 # ============================================================================
 
 # Get public IP with details
-myipinfo() {
+function myipinfo() {
     curl -s https://ipinfo.io/ | jq '.'
 }
 
 # Test website response time
-webtest() {
+function webtest() {
     curl -o /dev/null -s -w "Connect: %{time_connect}s\nStart Transfer: %{time_starttransfer}s\nTotal: %{time_total}s\n" "$1"
 }
 
 # Find process using a port
-port() {
+function port() {
     lsof -i ":$1" 2>/dev/null || netstat -tulanp 2>/dev/null | grep ":$1"
 }
 
@@ -98,7 +98,7 @@ port() {
 # ============================================================================
 
 # Search in file contents (recursive)
-search() {
+function search() {
     if command -v rg >/dev/null 2>&1; then
         rg "$1"
     else
@@ -107,7 +107,7 @@ search() {
 }
 
 # Search in history
-hs() {
+function hs() {
     history | grep "$1"
 }
 
@@ -116,7 +116,7 @@ hs() {
 # ============================================================================
 
 # Get system information
-sysinfo() {
+function sysinfo() {
     if command -v fastfetch >/dev/null 2>&1; then
         fastfetch
     elif command -v neofetch >/dev/null 2>&1; then
@@ -130,12 +130,12 @@ sysinfo() {
 }
 
 # Display disk usage in current directory
-duh() {
+function duh() {
     du -h --max-depth=1 2>/dev/null | sort -hr
 }
 
 # Find largest files in current directory
-largest() {
+function largest() {
     find . -type f -exec ls -lh {} \; 2>/dev/null | sort -k5 -hr | head -n ${1:-10}
 }
 
@@ -144,18 +144,18 @@ largest() {
 # ============================================================================
 
 # Create and activate Python virtual environment
-venv() {
+function venv() {
     python3 -m venv venv && source venv/bin/activate
 }
 
 # Serve current directory with Python HTTP server
-serve() {
+function serve() {
     local port="${1:-8000}"
     python3 -m http.server "$port"
 }
 
 # Quick JSON formatting
-jsonformat() {
+function jsonformat() {
     if [ -f "$1" ]; then
         cat "$1" | jq '.'
     else
@@ -168,7 +168,7 @@ jsonformat() {
 # ============================================================================
 
 # Docker cleanup - remove stopped containers and unused images
-dcleanup() {
+function dcleanup() {
     echo "Removing stopped containers..."
     docker container prune -f
     echo "Removing unused images..."
@@ -180,12 +180,12 @@ dcleanup() {
 }
 
 # Docker shell into container
-dsh() {
+function dsh() {
     docker exec -it "$1" /bin/bash || docker exec -it "$1" /bin/sh
 }
 
 # Docker logs follow
-dlf() {
+function dlf() {
     docker logs -f "$1"
 }
 
@@ -194,17 +194,17 @@ dlf() {
 # ============================================================================
 
 # Convert to lowercase
-lower() {
+function lower() {
     echo "$*" | tr '[:upper:]' '[:lower:]'
 }
 
 # Convert to uppercase
-upper() {
+function upper() {
     echo "$*" | tr '[:lower:]' '[:upper:]'
 }
 
 # Generate random password
-genpass() {
+function genpass() {
     local length="${1:-16}"
     openssl rand -base64 48 | cut -c1-"$length"
 }
@@ -214,7 +214,7 @@ genpass() {
 # ============================================================================
 
 # Quick note taking
-note() {
+function note() {
     local notes_file="${HOME}/.notes/$(date +%Y-%m-%d).md"
     mkdir -p "$(dirname "$notes_file")"
 
@@ -230,35 +230,35 @@ note() {
 # ============================================================================
 
 # Calculator
-calc() {
+function calc() {
     python3 -c "print($*)"
 }
 
 # Weather
-weather() {
+function weather() {
     local location="${1:-}"
     curl -s "wttr.in/${location}?format=3"
 }
 
 # Detailed weather
-weatherfull() {
+function weatherfull() {
     local location="${1:-}"
     curl -s "wttr.in/${location}"
 }
 
 # Cheat sheet
-cheat() {
+function cheat() {
     curl -s "cheat.sh/$1"
 }
 
 # Backup file with timestamp
-backup() {
+function backup() {
     local file="$1"
     cp "$file" "${file}.backup.$(date +%Y%m%d_%H%M%S)"
 }
 
 # Create temporary directory and cd into it
-tmpdir() {
+function tmpdir() {
     local tmp=$(mktemp -d)
     cd "$tmp"
     echo "Created temporary directory: $tmp"
