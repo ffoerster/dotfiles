@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 # Install Debian/Ubuntu packages from YAML configuration
+# Debian/Ubuntu only
+
+{{- if not (and (eq .chezmoi.os "linux") (hasKey .chezmoi.osRelease "id") (or (eq .chezmoi.osRelease.id "debian") (eq .chezmoi.osRelease.id "ubuntu"))) }}
+# Not Debian/Ubuntu, skip this script
+exit 0
+{{- end }}
 
 set -euo pipefail
 

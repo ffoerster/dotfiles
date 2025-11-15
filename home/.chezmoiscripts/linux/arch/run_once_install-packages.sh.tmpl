@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 # Install Arch Linux packages from YAML configuration
+# Arch Linux only
+
+{{- if not (and (eq .chezmoi.os "linux") (hasKey .chezmoi.osRelease "id") (eq .chezmoi.osRelease.id "arch")) }}
+# Not Arch Linux, skip this script
+exit 0
+{{- end }}
 
 set -euo pipefail
 

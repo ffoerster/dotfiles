@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 # Install Homebrew packages from YAML configuration
+# macOS only
+
+{{- if ne .chezmoi.os "darwin" }}
+# Not macOS, skip this script
+exit 0
+{{- end }}
 
 set -euo pipefail
 
