@@ -64,5 +64,8 @@ args = ["{{ .chezmoi.sourceDir }}/.chezmoiscripts/windows/.install-password-mana
 {{- else if eq .chezmoi.os "darwin" }}
 command = "{{ .chezmoi.sourceDir }}/.chezmoiscripts/darwin/.install-password-manager.sh"
 {{ else }}
-command = "{{ .chezmoi.sourceDir }}/.chezmoiscripts/linux/.install-password-manager.sh"
+# Linux: This is a template that will be rendered by chezmoi
+# The actual script is generated from .install-password-manager.sh.tmpl
+command = "bash"
+args = ["-c", "chezmoi execute-template < '{{ .chezmoi.sourceDir }}/.chezmoiscripts/linux/.install-password-manager.sh.tmpl' | bash"]
 {{ end -}}
