@@ -66,6 +66,8 @@ brews:
   - reattach-to-user-namespace
   - sesh
   - starship
+  - bandwhich
+  - lazydocker
 
   # Modern CLI tools
   - bat
