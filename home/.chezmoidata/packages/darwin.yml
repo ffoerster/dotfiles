@@ -55,6 +55,8 @@ brews:
   - git
   - gnupg
   - gpgme
+  - mkcert
+  - nss
 
   # Shell & Terminal
   - fish
@@ -68,6 +70,7 @@ brews:
   - starship
   - bandwhich
   - lazydocker
+  - atuin
 
   # Modern CLI tools
   - bat
