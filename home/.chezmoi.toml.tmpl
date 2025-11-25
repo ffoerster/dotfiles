@@ -63,9 +63,6 @@ command = "powershell"
 args = ["{{ .chezmoi.sourceDir }}/.chezmoiscripts/windows/.install-password-manager.ps1"]
 {{- else if eq .chezmoi.os "darwin" }}
 command = "{{ .chezmoi.sourceDir }}/.chezmoiscripts/darwin/.install-password-manager.sh"
-{{ else }}
-# Linux: This is a template that will be rendered by chezmoi
-# The actual script is generated from .install-password-manager.sh.tmpl
-command = "bash"
-args = ["-c", "chezmoi execute-template < '{{ .chezmoi.sourceDir }}/.chezmoiscripts/linux/.install-password-manager.sh.tmpl' | bash"]
-{{ end -}}
+{{- end -}}
+# Note: Linux 1Password installation is handled by run_once_before_install-password-manager.sh.tmpl
+# which runs automatically during chezmoi apply
