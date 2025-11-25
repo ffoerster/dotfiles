@@ -54,13 +54,15 @@ apt:
 
 # External repositories / manual installations
 external:
-  # These might need to be installed via script
+  # These are installed via chezmoi scripts in .chezmoiscripts/linux/
+  - name: starship
+    method: "run_once_before_install-starship.sh.tmpl"
+  - name: 1password-cli
+    method: "run_once_before_install-password-manager.sh.tmpl"
   - name: eza
     method: "cargo install eza"  # or download binary
   - name: zoxide
     method: "cargo install zoxide"  # or download binary
-  - name: 1password-cli
-    method: "script"  # Requires 1Password's official script
 
 # VM-specific optimizations (minimal install)
 vm_exclude:

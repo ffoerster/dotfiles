@@ -1,0 +1,76 @@
+#!/usr/bin/env bash
+# Install Starship prompt on Linux systems
+# Arch: handled by pacman packages
+# Debian/Ubuntu: use official installer script
+
+{{- if ne .chezmoi.os "linux" }}
+exit 0
+{{- end }}
+
+set -euo pipefail
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+header() {
+    echo -e "${BLUE}==>${NC} ${GREEN}$1${NC}"
+}
+
+notice() {
+    echo -e "${YELLOW}==>${NC} $1"
+}
+
+error() {
+    echo -e "${RED}Error:${NC} $1" >&2
+}
+
+# Check if starship is already installed
+if command -v starship &>/dev/null; then
+    notice "Starship is already installed: $(starship --version)"
+    exit 0
+fi
+
+{{- if and (hasKey .chezmoi.osRelease "id") (eq .chezmoi.osRelease.id "arch") }}
+# ============================================================================
+# ARCH LINUX - Handled by package manager
+# ============================================================================
+notice "Arch Linux detected - Starship will be installed via pacman packages"
+exit 0
+
+{{- else if and (hasKey .chezmoi.osRelease "id") (or (eq .chezmoi.osRelease.id "debian") (eq .chezmoi.osRelease.id "ubuntu")) }}
+# ============================================================================
+# DEBIAN/UBUNTU - Use official installer
+# ============================================================================
+header "Installing Starship on Debian/Ubuntu..."
+
+# Download and run the official installer
+notice "Downloading and running official Starship installer..."
+if curl -sS https://starship.rs/install.sh | sh -s -- --yes; then
+    header "Starship installed successfully: $(starship --version)"
+else
+    error "Failed to install Starship"
+    notice "You can manually install it with: curl -sS https://starship.rs/install.sh | sh"
+    exit 1
+fi
+
+{{- else }}
+# ============================================================================
+# OTHER LINUX - Use official installer
+# ============================================================================
+header "Installing Starship using official installer..."
+
+notice "Downloading and running official Starship installer..."
+if curl -sS https://starship.rs/install.sh | sh -s -- --yes; then
+    header "Starship installed successfully: $(starship --version)"
+else
+    error "Failed to install Starship"
+    notice "You can manually install it with: curl -sS https://starship.rs/install.sh | sh"
+    exit 1
+fi
+{{- end }}
+
+echo -e "${GREEN}✓${NC} Starship setup complete!"
