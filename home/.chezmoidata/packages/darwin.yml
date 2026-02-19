@@ -20,6 +20,7 @@ remove:
     - transmit
     - meetily
     - openra
+    - arc
   # Example: - old-app
 
   fonts: []
@@ -101,6 +102,7 @@ brews:
   - mkcert
   - yadm
   - tailscale
+  - opencode
 
   # Programming languages & package managers
   - fnm              # Fast Node Manager
@@ -174,9 +176,10 @@ casks:
   - 1password-cli
   - raycast
   - visual-studio-code
+  - boring-notch
 
   # Browsers & Communication
-  - arc
+  - brave-browser
   - slack
   - telegram
 
@@ -184,6 +187,7 @@ casks:
   - cyberduck
   - insomnia
   - sequel-ace
+  - orbstack
 
   # Creative
   - affinity-designer
@@ -191,6 +195,7 @@ casks:
   - affinity-publisher
   - obs
   - obsidian
+  - tidal
 
   # Productivity
   - clickup
