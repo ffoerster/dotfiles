@@ -178,7 +178,7 @@ casks:
   - 1password-cli
   - raycast
   - visual-studio-code
-  - boring-notch
+  - TheBoredTeam/boring-notch/boring-notch
 
   # Browsers & Communication
   - brave-browser
