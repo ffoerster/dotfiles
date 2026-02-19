@@ -48,7 +48,7 @@ if [[ ! -d "$ZDOTDIR" ]]; then
 fi
 
 # Download zimfw if not already installed
-if [[ ! -d "$ZIM_HOME" ]]; then
+if [[ ! -f "${ZIM_HOME}/zimfw.zsh" ]]; then
     notice "Downloading Zim framework..."
     curl -fsSL --create-dirs -o "${ZIM_HOME}/zimfw.zsh" \
         https://github.com/zimfw/zimfw/releases/latest/download/zimfw.zsh

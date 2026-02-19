@@ -18,9 +18,14 @@
 # ZIM FRAMEWORK
 # ============================================================================
 # Download zimfw plugin manager if missing
-if [[ ! -e ${ZDOTDIR:-${HOME}}/.zim ]]; then
+if [[ ! -f ${ZDOTDIR:-${HOME}}/.zim/zimfw.zsh ]]; then
     curl -fsSL --create-dirs -o ${ZDOTDIR:-${HOME}}/.zim/zimfw.zsh \
         https://github.com/zimfw/zimfw/releases/latest/download/zimfw.zsh
+fi
+
+if [[ ! -f ${ZDOTDIR:-${HOME}}/.zim/zimfw.zsh ]]; then
+    print -u2 "Zim bootstrap failed: missing ${ZDOTDIR:-${HOME}}/.zim/zimfw.zsh"
+    return 1
 fi
 
 # Install missing modules and update ${ZDOTDIR:-${HOME}}/.zim/init.zsh if missing or outdated

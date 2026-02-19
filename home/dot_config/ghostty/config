@@ -36,7 +36,7 @@ keybind = alt+shift+p=ignore
 # turn full screen off
 keybind = cmd+enter=ignore
 
-font-size =14.0
+font-size =16.0
 
 background-opacity = 0.98
 copy-on-select = clipboard
