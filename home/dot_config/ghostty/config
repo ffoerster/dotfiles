@@ -41,4 +41,8 @@ font-size =14.0
 background-opacity = 0.98
 copy-on-select = clipboard
 
+# Enable OSC 52 for clipboard in SSH sessions
+clipboard-read = allow
+clipboard-write = allow
+
 confirm-close-surface=false
