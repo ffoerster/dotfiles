@@ -26,13 +26,44 @@ notice() {
 
 error() {
     echo -e "${RED}Error:${NC} $1" >&2
+}
+
+fatal() {
+    error "$1"
     exit 1
+}
+
+retry() {
+    local description="$1"
+    shift
+
+    local max_attempts=3
+    local attempt
+
+    for attempt in $(seq 1 "$max_attempts"); do
+        if "$@"; then
+            return 0
+        fi
+
+        if [[ "$attempt" -lt "$max_attempts" ]]; then
+            notice "Retrying ${description} (${attempt}/${max_attempts})..."
+            sleep 2
+        fi
+    done
+
+    return 1
+}
+
+declare -a failed_items=()
+
+record_failure() {
+    failed_items+=("$1")
+    error "$1"
 }
 
 # Check if Homebrew is installed
 if ! command -v brew &>/dev/null; then
-    error "Homebrew is not installed. Please run the pre-requisites script first."
-    exit 1
+    fatal "Homebrew is not installed. Please run the pre-requisites script first."
 fi
 
 # Ensure yq is installed (required for parsing YAML)
@@ -44,13 +75,11 @@ fi
 PACKAGES_FILE="{{ .chezmoi.sourceDir }}/.chezmoidata/packages/darwin.yml"
 
 if [[ ! -f "$PACKAGES_FILE" ]]; then
-    error "Package file not found: $PACKAGES_FILE"
-    exit 1
+    fatal "Package file not found: $PACKAGES_FILE"
 fi
 
 if ! yq eval '.' "$PACKAGES_FILE" >/dev/null; then
-    error "Invalid YAML in package file: $PACKAGES_FILE"
-    exit 1
+    fatal "Invalid YAML in package file: $PACKAGES_FILE"
 fi
 
 brew_count=$(yq eval '.brews // [] | length' "$PACKAGES_FILE")
@@ -84,7 +113,7 @@ if [[ -n "$remove_brews" ]]; then
         if [[ -n "$formula" && "$formula" != "null" ]]; then
             if brew list "$formula" &>/dev/null; then
                 header "Removing formula: $formula"
-                brew uninstall "$formula" || error "Failed to remove $formula"
+                retry "remove formula $formula" brew uninstall "$formula" || record_failure "Failed to remove formula: $formula"
             else
                 notice "Not installed (skip): $formula"
             fi
@@ -99,7 +128,7 @@ if [[ -n "$remove_casks" ]]; then
         if [[ -n "$cask" && "$cask" != "null" ]]; then
             if brew list --cask "$cask" &>/dev/null; then
                 header "Removing cask: $cask"
-                brew uninstall --cask "$cask" || error "Failed to remove $cask"
+                retry "remove cask $cask" brew uninstall --cask "$cask" || record_failure "Failed to remove cask: $cask"
             else
                 notice "Not installed (skip): $cask"
             fi
@@ -114,7 +143,7 @@ if [[ -n "$remove_fonts" ]]; then
         if [[ -n "$font" && "$font" != "null" ]]; then
             if brew list --cask "$font" &>/dev/null; then
                 header "Removing font: $font"
-                brew uninstall --cask "$font" || error "Failed to remove $font"
+                retry "remove font $font" brew uninstall --cask "$font" || record_failure "Failed to remove font: $font"
             else
                 notice "Not installed (skip): $font"
             fi
@@ -133,7 +162,7 @@ if [[ -n "$taps" ]]; then
     while IFS= read -r tap; do
         if [[ -n "$tap" && "$tap" != "null" ]]; then
             header "Adding tap: $tap"
-            brew tap "$tap" || true
+            retry "add tap $tap" brew tap "$tap" || record_failure "Failed to add tap: $tap"
         fi
     done <<< "$taps"
 fi
@@ -142,16 +171,32 @@ fi
 notice "Installing Homebrew formulas..."
 brews=$(yq eval '.brews[]?' "$PACKAGES_FILE")
 if [[ -n "$brews" ]]; then
+    to_install=()
     while IFS= read -r formula; do
         if [[ -n "$formula" && "$formula" != "null" ]]; then
             if brew list "$formula" &>/dev/null; then
                 notice "Already installed: $formula"
             else
-                header "Installing: $formula"
-                brew install "$formula" || error "Failed to install $formula"
+                to_install+=("$formula")
             fi
         fi
     done <<< "$brews"
+
+    if [[ ${#to_install[@]} -gt 0 ]]; then
+        header "Installing ${#to_install[@]} formulas..."
+
+        if ! retry "install formula batch" brew install "${to_install[@]}"; then
+            notice "Batch formula install failed, retrying individually..."
+            for formula in "${to_install[@]}"; do
+                if brew list "$formula" &>/dev/null; then
+                    continue
+                fi
+
+                header "Installing: $formula"
+                retry "install formula $formula" brew install "$formula" || record_failure "Failed to install formula: $formula"
+            done
+        fi
+    fi
 fi
 
 # Install casks
@@ -164,7 +209,7 @@ if [[ -n "$casks" ]]; then
                 notice "Already installed: $cask"
             else
                 header "Installing cask: $cask"
-                brew install --cask "$cask" || error "Failed to install $cask"
+                retry "install cask $cask" brew install --cask "$cask" || record_failure "Failed to install cask: $cask"
             fi
         fi
     done <<< "$casks"
@@ -180,7 +225,7 @@ if [[ -n "$fonts" ]]; then
                 notice "Already installed: $font"
             else
                 header "Installing font: $font"
-                brew install --cask "$font" || error "Failed to install $font"
+                retry "install font $font" brew install --cask "$font" || record_failure "Failed to install font: $font"
             fi
         fi
     done <<< "$fonts"
@@ -198,7 +243,7 @@ if command -v mas &>/dev/null; then
                     notice "Already installed: $app_name ($app_id)"
                 else
                     header "Installing from App Store: $app_name ($app_id)"
-                    mas install "$app_id" || error "Failed to install $app_name"
+                    retry "install App Store app $app_name" mas install "$app_id" || record_failure "Failed to install App Store app: $app_name ($app_id)"
                 fi
             fi
         done
@@ -210,5 +255,13 @@ header "Package installation complete!"
 # Cleanup
 notice "Running brew cleanup..."
 brew cleanup
+
+if [[ ${#failed_items[@]} -gt 0 ]]; then
+    error "Completed with ${#failed_items[@]} failure(s):"
+    for failed_item in "${failed_items[@]}"; do
+        error " - ${failed_item}"
+    done
+    exit 1
+fi
 
 echo -e "${GREEN}✓${NC} All packages installed successfully!"
