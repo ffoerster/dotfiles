@@ -173,6 +173,7 @@ casks:
   - brave-browser
   - slack
   - telegram
+  - element
 
   # Development
   - cyberduck
