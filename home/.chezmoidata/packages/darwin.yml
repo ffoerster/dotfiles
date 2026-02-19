@@ -151,6 +151,7 @@ brews:
   - syft
   - testdisk
   - nowplaying-cli
+  - displaylink
 
   # Email tools
   - imap-backup
