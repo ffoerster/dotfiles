@@ -134,7 +134,6 @@ brews:
   - llvm
   - lua
   - sevenzip
-  - six
   - sonic
   - speedtest-cli
   - switchaudio-osx
