@@ -48,9 +48,6 @@ Library
 
 {{ if ne .chezmoi.os "linux" }}
 .chezmoiscripts/linux/**
-dot_bashrc
-dot_config
-dot_local
 {{ end }}
 
 {{ if ne .chezmoi.os "windows" }}
