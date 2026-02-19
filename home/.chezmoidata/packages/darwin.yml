@@ -152,6 +152,7 @@ brews:
   - testdisk
   - nowplaying-cli
   - displaylink
+  - bartender
 
   # Email tools
   - imap-backup
