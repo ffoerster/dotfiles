@@ -5,7 +5,7 @@
 theme = Kanagawa Wave
 
 # custom fonts
-font-family = "Monaspace Neon"
+font-family = "Berkeley Mono Variable"
 # ss01: != and ===
 font-feature = "ss01"
 # ss02: <= and >=

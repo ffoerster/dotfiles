@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+{{- if not (and (eq .chezmoi.os "linux") (not .is_vm)) }}
+exit 0
+{{- end }}
+
+if ! command -v fc-cache &>/dev/null; then
+    exit 0
+fi
+
+fonts_dir="${HOME}/.local/share/fonts"
+
+if [[ ! -d "$fonts_dir" ]]; then
+    exit 0
+fi
+
+fc-cache -f "$fonts_dir"

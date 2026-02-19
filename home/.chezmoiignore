@@ -95,6 +95,11 @@ dot_config/work/**
 .config/wezterm/**
 Library/**
 Applications/**
+.local/share/fonts/**
+Library/Fonts/**
+dot_local/share/fonts/**
+private_dot_local/share/fonts/**
+private_Library/Fonts/**
 
 # Ignore resource-heavy tools on VMs
 .config/docker/  # If not doing development
