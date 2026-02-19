@@ -38,12 +38,40 @@ fi
 # Check if yq is available (needed to parse YAML)
 if ! command -v yq &>/dev/null; then
     notice "yq not found, installing..."
-    # Install yq from GitHub releases
     YQ_VERSION="v4.35.1"
-    YQ_BINARY="yq_linux_amd64"
+    case "$(uname -m)" in
+        x86_64)
+            YQ_BINARY="yq_linux_amd64"
+            ;;
+        aarch64|arm64)
+            YQ_BINARY="yq_linux_arm64"
+            ;;
+        *)
+            error "Unsupported architecture for yq installation: $(uname -m)"
+            exit 1
+            ;;
+    esac
     sudo wget -qO /usr/local/bin/yq "https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/${YQ_BINARY}"
     sudo chmod +x /usr/local/bin/yq
 fi
+
+if ! yq eval '.' "$PACKAGES_FILE" >/dev/null; then
+    error "Invalid YAML in package file: $PACKAGES_FILE"
+    exit 1
+fi
+
+remove_count=$(yq eval '.remove.apt // [] | length' "$PACKAGES_FILE")
+apt_count=$(yq eval '.apt // [] | length' "$PACKAGES_FILE")
+external_count=$(yq eval '.external // [] | length' "$PACKAGES_FILE")
+vm_exclude_count=$(yq eval '.vm_exclude // [] | length' "$PACKAGES_FILE")
+desktop_count=$(yq eval '.desktop // [] | length' "$PACKAGES_FILE")
+
+header "Package preflight"
+notice "Detected ${remove_count} removable APT packages"
+notice "Detected ${apt_count} APT packages"
+notice "Detected ${external_count} external packages"
+notice "Detected ${vm_exclude_count} VM exclude packages"
+notice "Detected ${desktop_count} desktop packages"
 
 header "Processing Debian/Ubuntu packages from debian.yml"
 
@@ -53,7 +81,7 @@ header "Processing Debian/Ubuntu packages from debian.yml"
 notice "Checking for packages to remove..."
 
 # Remove APT packages
-remove_apt=$(yq eval '.remove.apt[]' "$PACKAGES_FILE" 2>/dev/null || echo "")
+remove_apt=$(yq eval '.remove.apt[]?' "$PACKAGES_FILE")
 if [[ -n "$remove_apt" ]]; then
     to_remove=()
     while IFS= read -r pkg; do
@@ -83,11 +111,11 @@ sudo apt update
 
 # Install APT packages
 notice "Installing APT packages..."
-apt_pkgs=$(yq eval '.apt[]' "$PACKAGES_FILE" 2>/dev/null || echo "")
+apt_pkgs=$(yq eval '.apt[]?' "$PACKAGES_FILE")
 if [[ -n "$apt_pkgs" ]]; then
 {{ if .is_vm }}
     # On VMs, check for packages to exclude
-    vm_exclude=$(yq eval '.vm_exclude[]' "$PACKAGES_FILE" 2>/dev/null || echo "")
+    vm_exclude=$(yq eval '.vm_exclude[]?' "$PACKAGES_FILE")
     exclude_list=()
     while IFS= read -r pkg; do
         if [[ -n "$pkg" && "$pkg" != "null" ]]; then
@@ -128,7 +156,6 @@ fi
 
 # Install external packages (requires special handling)
 notice "Installing external packages..."
-external_count=$(yq eval '.external | length' "$PACKAGES_FILE" 2>/dev/null || echo "0")
 if [[ "$external_count" -gt 0 ]]; then
     for ((i=0; i<external_count; i++)); do
         pkg_name=$(yq eval ".external[$i].name" "$PACKAGES_FILE")
@@ -172,7 +199,7 @@ fi
 {{ if not .is_vm }}
 # Install desktop packages (only on non-VM systems)
 notice "Installing desktop packages..."
-desktop_pkgs=$(yq eval '.desktop[]' "$PACKAGES_FILE" 2>/dev/null || echo "")
+desktop_pkgs=$(yq eval '.desktop[]?' "$PACKAGES_FILE")
 if [[ -n "$desktop_pkgs" ]]; then
     to_install=()
     while IFS= read -r pkg; do
