@@ -13,18 +13,9 @@ remove:
   # Example: - old-package
   # Example: - unused-tool
 
-  casks:
-    - spotify
-    - jetbrains-toolbox
-    - tower
-    - transmit
-    - meetily
-    - openra
-    - arc
-    - archivebox/archivebox
-    - affinity-designer
-    - affinity-photo
-    - affinity-publisher
+  # casks:
+  #   - spotify
+
   # Example: - old-app
 
   fonts: []
@@ -36,7 +27,6 @@ remove:
 
 # Homebrew taps (additional repositories)
 taps:
-  - homebrew/cask-fonts
   - ddev/ddev
   - emmercm/igir
   - esolitos/ipa
