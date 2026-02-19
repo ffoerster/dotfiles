@@ -21,6 +21,10 @@ remove:
     - meetily
     - openra
     - arc
+    - archivebox/archivebox
+    - affinity-designer
+    - affinity-photo
+    - affinity-publisher
   # Example: - old-app
 
   fonts: []
@@ -33,7 +37,6 @@ remove:
 # Homebrew taps (additional repositories)
 taps:
   - homebrew/cask-fonts
-  - archivebox/archivebox
   - ddev/ddev
   - emmercm/igir
   - esolitos/ipa
@@ -96,10 +99,8 @@ brews:
   - chezmoi
   - cmake
   - gh
-  - lazydocker
   - lazygit
   - mas
-  - mkcert
   - yadm
   - tailscale
   - opencode
@@ -142,7 +143,6 @@ brews:
   - hugo
   - llvm
   - lua
-  - nss
   - sevenzip
   - six
   - sonic
@@ -190,9 +190,6 @@ casks:
   - orbstack
 
   # Creative
-  - affinity-designer
-  - affinity-photo
-  - affinity-publisher
   - obs
   - obsidian
   - tidal
