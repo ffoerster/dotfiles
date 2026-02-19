@@ -13,14 +13,13 @@ remove:
   # Example: - old-package
   # Example: - unused-tool
 
-  casks: [
+  casks:
     - spotify
     - jetbrains-toolbox
     - tower
     - transmit
     - meetily
     - openra
-  ]
   # Example: - old-app
 
   fonts: []

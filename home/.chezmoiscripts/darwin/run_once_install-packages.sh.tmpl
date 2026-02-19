@@ -47,6 +47,28 @@ if [[ ! -f "$PACKAGES_FILE" ]]; then
     exit 1
 fi
 
+if ! yq eval '.' "$PACKAGES_FILE" >/dev/null; then
+    error "Invalid YAML in package file: $PACKAGES_FILE"
+    exit 1
+fi
+
+brew_count=$(yq eval '.brews // [] | length' "$PACKAGES_FILE")
+cask_count=$(yq eval '.casks // [] | length' "$PACKAGES_FILE")
+font_count=$(yq eval '.fonts // [] | length' "$PACKAGES_FILE")
+tap_count=$(yq eval '.taps // [] | length' "$PACKAGES_FILE")
+mas_count=$(yq eval '.mas_apps // [] | length' "$PACKAGES_FILE")
+
+header "Package preflight"
+notice "Detected ${tap_count} taps"
+notice "Detected ${brew_count} formulas"
+notice "Detected ${cask_count} casks"
+notice "Detected ${font_count} fonts"
+notice "Detected ${mas_count} App Store apps"
+
+if [[ "$brew_count" -eq 0 && "$cask_count" -eq 0 && "$font_count" -eq 0 && "$mas_count" -eq 0 ]]; then
+    notice "No install targets found in darwin.yml"
+fi
+
 header "Processing Homebrew packages from darwin.yml"
 
 # ============================================================================
@@ -55,7 +77,7 @@ header "Processing Homebrew packages from darwin.yml"
 notice "Checking for packages to remove..."
 
 # Remove brews
-remove_brews=$(yq eval '.remove.brews[]' "$PACKAGES_FILE" 2>/dev/null || echo "")
+remove_brews=$(yq eval '.remove.brews[]?' "$PACKAGES_FILE")
 if [[ -n "$remove_brews" ]]; then
     while IFS= read -r formula; do
         if [[ -n "$formula" && "$formula" != "null" ]]; then
@@ -70,7 +92,7 @@ if [[ -n "$remove_brews" ]]; then
 fi
 
 # Remove casks
-remove_casks=$(yq eval '.remove.casks[]' "$PACKAGES_FILE" 2>/dev/null || echo "")
+remove_casks=$(yq eval '.remove.casks[]?' "$PACKAGES_FILE")
 if [[ -n "$remove_casks" ]]; then
     while IFS= read -r cask; do
         if [[ -n "$cask" && "$cask" != "null" ]]; then
@@ -85,7 +107,7 @@ if [[ -n "$remove_casks" ]]; then
 fi
 
 # Remove fonts
-remove_fonts=$(yq eval '.remove.fonts[]' "$PACKAGES_FILE" 2>/dev/null || echo "")
+remove_fonts=$(yq eval '.remove.fonts[]?' "$PACKAGES_FILE")
 if [[ -n "$remove_fonts" ]]; then
     while IFS= read -r font; do
         if [[ -n "$font" && "$font" != "null" ]]; then
@@ -105,7 +127,7 @@ fi
 
 # Parse YAML and install taps
 notice "Adding Homebrew taps..."
-taps=$(yq eval '.taps[]' "$PACKAGES_FILE" 2>/dev/null || echo "")
+taps=$(yq eval '.taps[]?' "$PACKAGES_FILE")
 if [[ -n "$taps" ]]; then
     while IFS= read -r tap; do
         if [[ -n "$tap" && "$tap" != "null" ]]; then
@@ -117,7 +139,7 @@ fi
 
 # Install formulas
 notice "Installing Homebrew formulas..."
-brews=$(yq eval '.brews[]' "$PACKAGES_FILE" 2>/dev/null || echo "")
+brews=$(yq eval '.brews[]?' "$PACKAGES_FILE")
 if [[ -n "$brews" ]]; then
     while IFS= read -r formula; do
         if [[ -n "$formula" && "$formula" != "null" ]]; then
@@ -133,7 +155,7 @@ fi
 
 # Install casks
 notice "Installing Homebrew casks..."
-casks=$(yq eval '.casks[]' "$PACKAGES_FILE" 2>/dev/null || echo "")
+casks=$(yq eval '.casks[]?' "$PACKAGES_FILE")
 if [[ -n "$casks" ]]; then
     while IFS= read -r cask; do
         if [[ -n "$cask" && "$cask" != "null" ]]; then
@@ -149,7 +171,7 @@ fi
 
 # Install fonts
 notice "Installing fonts..."
-fonts=$(yq eval '.fonts[]' "$PACKAGES_FILE" 2>/dev/null || echo "")
+fonts=$(yq eval '.fonts[]?' "$PACKAGES_FILE")
 if [[ -n "$fonts" ]]; then
     while IFS= read -r font; do
         if [[ -n "$font" && "$font" != "null" ]]; then
@@ -166,7 +188,6 @@ fi
 # Install Mac App Store apps (if mas is available)
 if command -v mas &>/dev/null; then
     notice "Installing Mac App Store apps..."
-    mas_count=$(yq eval '.mas_apps | length' "$PACKAGES_FILE" 2>/dev/null || echo "0")
     if [[ "$mas_count" -gt 0 ]]; then
         for ((i=0; i<mas_count; i++)); do
             app_id=$(yq eval ".mas_apps[$i].id" "$PACKAGES_FILE")
