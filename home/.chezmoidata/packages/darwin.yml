@@ -36,6 +36,7 @@ taps:
   - rhettbull/osxphotos
   - sikarugir-app/sikarugir
   - supabase/tap
+  - AlexsJones/llmfit
 
 # Homebrew formulas (CLI tools)
 brews:
@@ -94,6 +95,7 @@ brews:
   - yadm
   - tailscale
   - opencode
+  - llmfit
 
   # Programming languages & package managers
   - fnm              # Fast Node Manager
