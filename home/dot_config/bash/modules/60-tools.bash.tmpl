@@ -118,11 +118,17 @@ fi
 # ============================================================================
 # Performant npm
 if command -v pnpm >/dev/null 2>&1; then
-{{ if eq .chezmoi.os "darwin" }}
-    export PNPM_HOME="${HOME}/Library/pnpm"
-{{ else }}
-    export PNPM_HOME="${HOME}/.local/share/pnpm"
-{{ end }}
+    if [ -n "${PNPM_HOME:-}" ]; then
+        :
+    elif [ -d "${HOME}/.local/share/pnpm" ]; then
+        export PNPM_HOME="${HOME}/.local/share/pnpm"
+    elif [ -d "${HOME}/Library/pnpm" ]; then
+        export PNPM_HOME="${HOME}/Library/pnpm"
+    elif [ -n "${XDG_DATA_HOME:-}" ]; then
+        export PNPM_HOME="${XDG_DATA_HOME}/pnpm"
+    else
+        export PNPM_HOME="${HOME}/.local/share/pnpm"
+    fi
 
     case ":$PATH:" in
         *":$PNPM_HOME:"*) ;;

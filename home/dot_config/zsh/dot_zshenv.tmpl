@@ -66,3 +66,22 @@ skip_global_compinit=1
 
 # NODE
 export NODE_OPTIONS="--use-bundled-ca ${NODE_OPTIONS:-}"
+
+# ====================================================================
+# PNPM
+# ====================================================================
+
+if [[ -n "${PNPM_HOME:-}" ]]; then
+    :
+elif [[ -d "${XDG_DATA_HOME}/pnpm" ]]; then
+    export PNPM_HOME="${XDG_DATA_HOME}/pnpm"
+elif [[ -d "${HOME}/Library/pnpm" ]]; then
+    export PNPM_HOME="${HOME}/Library/pnpm"
+else
+    export PNPM_HOME="${XDG_DATA_HOME}/pnpm"
+fi
+
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
