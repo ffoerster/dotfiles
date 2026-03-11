@@ -41,16 +41,31 @@ if ! command -v yq &>/dev/null; then
     sudo pacman -S --noconfirm yq
 fi
 
-if ! yq eval '.' "$PACKAGES_FILE" >/dev/null; then
+YQ_MODE=""
+if yq eval '.' "$PACKAGES_FILE" >/dev/null 2>&1; then
+    YQ_MODE="mikefarah"
+elif yq '.' "$PACKAGES_FILE" >/dev/null 2>&1; then
+    YQ_MODE="python"
+else
     error "Invalid YAML in package file: $PACKAGES_FILE"
     exit 1
 fi
 
-remove_pacman_count=$(yq eval '.remove.pacman // [] | length' "$PACKAGES_FILE")
-remove_aur_count=$(yq eval '.remove.aur // [] | length' "$PACKAGES_FILE")
-pacman_count=$(yq eval '.pacman // [] | length' "$PACKAGES_FILE")
-aur_count=$(yq eval '.aur // [] | length' "$PACKAGES_FILE")
-gui_count=$(yq eval '.gui_packages // [] | length' "$PACKAGES_FILE")
+yq_query() {
+    local expr="$1"
+
+    if [[ "$YQ_MODE" == "mikefarah" ]]; then
+        yq eval "$expr" "$PACKAGES_FILE"
+    else
+        yq "$expr" "$PACKAGES_FILE"
+    fi
+}
+
+remove_pacman_count=$(yq_query '.remove.pacman // [] | length')
+remove_aur_count=$(yq_query '.remove.aur // [] | length')
+pacman_count=$(yq_query '.pacman // [] | length')
+aur_count=$(yq_query '.aur // [] | length')
+gui_count=$(yq_query '.gui_packages // [] | length')
 
 header "Package preflight"
 notice "Detected ${remove_pacman_count} removable pacman packages"
@@ -67,7 +82,7 @@ header "Processing Arch Linux packages from arch.yml"
 notice "Checking for packages to remove..."
 
 # Remove pacman packages
-remove_pacman=$(yq eval '.remove.pacman[]?' "$PACKAGES_FILE")
+remove_pacman=$(yq_query '.remove.pacman[]?')
 if [[ -n "$remove_pacman" ]]; then
     to_remove=()
     while IFS= read -r pkg; do
@@ -88,7 +103,7 @@ fi
 
 # Remove AUR packages (if paru/yay is available)
 if command -v paru &>/dev/null || command -v yay &>/dev/null; then
-    remove_aur=$(yq eval '.remove.aur[]?' "$PACKAGES_FILE")
+    remove_aur=$(yq_query '.remove.aur[]?')
     if [[ -n "$remove_aur" ]]; then
         to_remove=()
         while IFS= read -r pkg; do
@@ -122,7 +137,7 @@ sudo pacman -Sy
 
 # Install pacman packages
 notice "Installing pacman packages..."
-pacman_pkgs=$(yq eval '.pacman[]?' "$PACKAGES_FILE")
+pacman_pkgs=$(yq_query '.pacman[]?')
 if [[ -n "$pacman_pkgs" ]]; then
     to_install=()
     while IFS= read -r pkg; do
@@ -167,7 +182,7 @@ fi
 # Install AUR packages
 if [[ -n "$AUR_HELPER" ]]; then
     notice "Installing AUR packages using $AUR_HELPER..."
-    aur_pkgs=$(yq eval '.aur[]?' "$PACKAGES_FILE")
+    aur_pkgs=$(yq_query '.aur[]?')
     if [[ -n "$aur_pkgs" ]]; then
         to_install=()
         while IFS= read -r pkg; do
@@ -190,7 +205,7 @@ fi
 {{ if not .is_vm }}
 # Install GUI packages (only on desktop systems, not VMs)
 notice "Installing GUI packages (desktop mode)..."
-gui_pkgs=$(yq eval '.gui_packages[]?' "$PACKAGES_FILE")
+gui_pkgs=$(yq_query '.gui_packages[]?')
 if [[ -n "$gui_pkgs" ]]; then
     to_install=()
     while IFS= read -r pkg; do
