@@ -47,8 +47,8 @@ setopt NUMERIC_GLOB_SORT         # Sort numerical filenames numerically
 # ============================================================================
 # CORRECTION
 # ============================================================================
-setopt CORRECT                   # Try to correct spelling of commands
-setopt CORRECT_ALL               # Try to correct spelling of all arguments
+unsetopt CORRECT                   # Try to correct spelling of commands
+unsetopt CORRECT_ALL               # Try to correct spelling of all arguments
 
 # ============================================================================
 # JOB CONTROL
