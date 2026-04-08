@@ -4,6 +4,7 @@ windows:
   - window_name: ssh
     panes:
       - ls
+      - ls
   - window_name: editor
     panes:
       - cd ~/code && nvim

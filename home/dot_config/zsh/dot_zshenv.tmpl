@@ -85,3 +85,12 @@ case ":$PATH:" in
   *":$PNPM_HOME:"*) ;;
   *) export PATH="$PNPM_HOME:$PATH" ;;
 esac
+
+# ============================================================================
+# Vite+ (https://viteplus.dev)
+# ============================================================================
+
+if [[ -f "${HOME}/.vite-plus/env" ]]; then
+    . "${HOME}/.vite-plus/env"
+fi
+

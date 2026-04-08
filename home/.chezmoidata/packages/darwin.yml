@@ -36,6 +36,7 @@ taps:
   - rhettbull/osxphotos
   - sikarugir-app/sikarugir
   - supabase/tap
+  - tobi/try
   - AlexsJones/llmfit
 
 # Homebrew formulas (CLI tools)
@@ -144,6 +145,7 @@ brews:
   - nowplaying-cli
   - displaylink
   - bartender
+  - try
 
   # Email tools
   - imap-backup
