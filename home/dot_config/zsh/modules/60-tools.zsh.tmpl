@@ -240,15 +240,15 @@ if [ -n "${MISE_BIN:-}" ] && [ -x "$MISE_BIN" ]; then
     export __MISE_ZSH_CHPWD_RAN=0
 
     _mise_eval() {
-        local output status
+        local output exit_code
         output="$(command "$MISE_BIN" "$@")"
-        status=$?
+        exit_code=$?
 
-        if [ $status -eq 0 ] && [ -n "$output" ]; then
+        if [ $exit_code -eq 0 ] && [ -n "$output" ]; then
             eval "$output"
         fi
 
-        return $status
+        return $exit_code
     }
 
     mise() {
